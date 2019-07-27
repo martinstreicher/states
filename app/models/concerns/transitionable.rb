@@ -35,4 +35,8 @@ module Transitionable
         transition_class: Transition
       )
   end
+
+  def expired(_transition); end
+  def finished(_transition); end
+  def start(_transition); end
 end
