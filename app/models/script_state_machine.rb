@@ -6,5 +6,5 @@ class ScriptStateMachine < StateMachine
     record.step_one transition
   end
 
-  # states :one, :two
+  steps :one, two: %i[three four]
 end

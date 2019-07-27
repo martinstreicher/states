@@ -24,5 +24,19 @@ class StateMachine
         record.expired transition
       end
     end
+
+    def self.steps(*names)
+      names.each do |name|
+        instance_eval do
+          state name
+
+          transition from: :pending, to: name
+
+          before_transition(to: name) do |record, transition|
+            send("step_#{name}", record, transition)
+          end
+        end
+      end
+    end
   end
 end
