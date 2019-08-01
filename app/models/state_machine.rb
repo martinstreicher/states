@@ -4,10 +4,11 @@ class StateMachine
   include Statesman::Machine
   include Statesman::Events
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable Lint/NestedMethodDefinition, Metrics/AbcSize, Metrics/MethodLength
 
   def self.inherited(subclass)
+    subclass.extend ClassMethods
+
     subclass.instance_eval do
       state :expire
       state :finish
@@ -30,7 +31,13 @@ class StateMachine
       end
     end
 
-    def self.call_if_defined(method_name, record, transition = nil)
+    def states
+      self.class.states
+    end
+  end
+
+  module ClassMethods
+    def call_if_defined(method_name, record, transition = nil)
       return true unless record.respond_to?(method_name)
 
       args = [method_name, record]
@@ -38,7 +45,7 @@ class StateMachine
       send(*args)
     end
 
-    def self.plan(options = {})
+    def plan(options = {})
       @states_cache = []
 
       raise ArgumentError, 'no block provided' unless block_given?
@@ -75,7 +82,7 @@ class StateMachine
       end
     end
 
-    def self.step(*names)
+    def step(*names)
       (@states_cache ||= []).push(*names)
 
       names.each do |name|
@@ -84,13 +91,7 @@ class StateMachine
         end
       end
     end
-
-    def states
-      self.class.states
-    end
   end
 
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-
+  # rubocop:enable Lint/NestedMethodDefinition, Metrics/AbcSize, Metrics/MethodLength
 end
