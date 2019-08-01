@@ -25,20 +25,48 @@ class StateMachine
       end
     end
 
-    def self.plan(options = {}, &block)
-      raise ArgumentError.new('no block provided') unless block_given?
+    def self.call_if_defined(method_name, record, transition = nil)
+      return true unless record.respond_to?(method_name)
 
-      previous_states  = @states_cache&.clone || []
+      args = [method_name, record]
+      args.push(transition) if transition
+      send(*args)
+    end
+
+    def self.plan(options = {}, &block)
+      @states_cache = []
+
+      raise ArgumentError.new('no block provided') unless block_given?
 
       yield
 
-      new_states       = @states_cache - previous_states
       modified_options = options.symbolize_keys
       end_state        = modified_options.fetch :to, :finish
       start_state      = modified_options.fetch :from, :start
 
       instance_eval do
+        transition from: start_state, to: @states_cache.first
+        transition from: @states_cache.last, to: end_state
 
+        @states_cache.each_with_index do |state, index|
+          current_state = @states_cache[index]
+          next_state    = @states_cache[index + 1]
+          break if next_state.nil?
+
+          transition from: current_state, to: next_state
+
+          after_transition(to: current_state) do |record, transition|
+            call_if_defined "after_#{current_state}", record, transition
+          end
+
+          before_transition(to: current_state) do |record, transition|
+            call_if_defined "before_#{current_state}", record, transition
+          end
+
+          guard_transition(to: current_state) do |record|
+            call_if_defined "guard_#{current_state}", record
+          end
+        end
       end
     end
 
@@ -48,14 +76,6 @@ class StateMachine
       names.each do |name|
         instance_eval do
           state name
-          transition from: :pending, to: name
-
-          before_transition(to: name) do |record, transition|
-            method_to_call = "step_#{name}"
-
-            send(method_to_call, record, transition) if
-              record.respond_to?(method_to_call)
-          end
         end
       end
     end
