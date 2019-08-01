@@ -1,0 +1,37 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-thread_safety
+
+AllCops:
+  Exclude:
+    - 'Guardfile'
+    - 'bin/**/*'
+    - 'db/**/*'
+  TargetRubyVersion: 2.6.1
+
+Layout/AlignHash:
+  EnforcedColonStyle: table
+  EnforcedHashRocketStyle: table
+
+Metrics/BlockLength:
+  Exclude:
+
+Metrics/LineLength:
+  Exclude:
+    - Guardfile
+    - config/initializers/backtrace_silencers.rb
+  Max: 110
+
+Rails:
+  Enabled: true
+
+Rails/HttpPositionalArguments:
+  Exclude:
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false

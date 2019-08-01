@@ -1,6 +1,11 @@
+# frozen_string_literal: true
+
 class StateMachine
   include Statesman::Machine
   include Statesman::Events
+
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def self.inherited(subclass)
     subclass.instance_eval do
@@ -21,7 +26,7 @@ class StateMachine
       end
 
       before_transition(to: :expire) do |record, transition|
-        record.expire(transition)  if record.respond_to?(:expire)
+        record.expire(transition) if record.respond_to?(:expire)
       end
     end
 
@@ -33,10 +38,10 @@ class StateMachine
       send(*args)
     end
 
-    def self.plan(options = {}, &block)
+    def self.plan(options = {})
       @states_cache = []
 
-      raise ArgumentError.new('no block provided') unless block_given?
+      raise ArgumentError, 'no block provided' unless block_given?
 
       yield
 
@@ -48,7 +53,7 @@ class StateMachine
         transition from: start_state, to: @states_cache.first
         transition from: @states_cache.last, to: end_state
 
-        @states_cache.each_with_index do |state, index|
+        @states_cache.each_with_index do |_state, index|
           current_state = @states_cache[index]
           next_state    = @states_cache[index + 1]
           break if next_state.nil?
@@ -84,4 +89,8 @@ class StateMachine
       self.class.states
     end
   end
+
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
 end

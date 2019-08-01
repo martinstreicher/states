@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ParticipantStateMachine < StateMachine
   state :active
   state :cancelled

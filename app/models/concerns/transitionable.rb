@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Transitionable
   extend ActiveSupport::Concern
   include Memery
   include Statesman::Adapters::ActiveRecordQueries
 
   included do
-    has_many :transitions, as: :transitionable
+    has_many :transitions, as: :transitionable, dependent: :destroy
 
     delegate(
       :allowed_transitions,

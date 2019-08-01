@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ScriptStateMachine < StateMachine
   # steps :one, two: %i[three four]
   plan do

@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class Script < ApplicationRecord
   include Transitionable
 
   def start(_)
-    puts 'Starting...'
+    logger.info 'Starting...'
   end
 
   def step_one(_)
-    puts 'Step one...'
+    logger.info 'Step one...'
   end
 end
