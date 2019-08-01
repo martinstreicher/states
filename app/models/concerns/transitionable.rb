@@ -1,5 +1,6 @@
 module Transitionable
   extend ActiveSupport::Concern
+  include Memery
   include Statesman::Adapters::ActiveRecordQueries
 
   included do
@@ -9,6 +10,7 @@ module Transitionable
       :allowed_transitions,
       :can_transition_to?,
       :current_state,
+      :states,
       :transition_to!,
       :transition_to,
       to: :state_machine
@@ -25,18 +27,13 @@ module Transitionable
     private_class_method :initial_state
   end
 
-  def state_machine
+  memoize def state_machine
     klass = "#{self.class.name}StateMachine".constantize
 
-    @state_machine ||=
-      klass.new(
-        self,
-        association_name: :transitions,
-        transition_class: Transition
-      )
+    klass.new(
+      self,
+      association_name: :transitions,
+      transition_class: Transition
+    )
   end
-
-  def expired(_transition); end
-  def finished(_transition); end
-  def start(_transition); end
 end
