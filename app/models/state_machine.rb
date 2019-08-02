@@ -10,6 +10,8 @@ class StateMachine
     subclass.extend ClassMethods
 
     subclass.instance_eval do
+      class_attribute :states_cache, instance_writer: false, default: []
+
       state :expire
       state :finish
       state :pending, initial: true
@@ -55,8 +57,6 @@ class StateMachine
     end
 
     def plan(options = {})
-      @states_cache = []
-
       raise ArgumentError, 'no block provided' unless block_given?
 
       yield
@@ -66,12 +66,14 @@ class StateMachine
       start_state      = modified_options.fetch :from, :start
 
       instance_eval do
-        transition from: start_state, to: @states_cache.first
-        transition from: @states_cache.last, to: end_state
+        transition from: start_state, to: states_cache.first
+        transition from: states_cache.last, to: end_state
 
-        @states_cache.each_with_index do |_state, index|
-          current_state = @states_cache[index]
-          next_state    = @states_cache[index + 1]
+        states_cache.each_with_index do |_state, index|
+          byebug
+
+          current_state = states_cache[index]
+          next_state    = states_cache[index + 1]
           break if next_state.nil?
 
           transition from: current_state, to: next_state
@@ -92,7 +94,7 @@ class StateMachine
     end
 
     def step(*names)
-      (@states_cache ||= []).push(*names)
+      states_cache.push(*names)
 
       names.each do |name|
         instance_eval do
