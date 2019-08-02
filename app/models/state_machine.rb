@@ -34,15 +34,24 @@ class StateMachine
     def states
       self.class.states
     end
+
+    private
+
+    def logger
+      Rails.logger
+    end
   end
 
   module ClassMethods
     def call_if_defined(method_name, record, transition = nil)
-      return true unless record.respond_to?(method_name)
+      state_machine = record.state_machine
+      return true unless state_machine.respond_to?(method_name)
 
-      args = [method_name, record]
-      args.push(transition) if transition
-      send(*args)
+      arity = state_machine.method(method_name).arity
+      args = []
+      args.push(record) if arity >= 1
+      args.push(transition) if (arity == 2) && transition
+      state_machine.send(method_name, *args)
     end
 
     def plan(options = {})

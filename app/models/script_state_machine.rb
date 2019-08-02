@@ -11,4 +11,16 @@ class ScriptStateMachine < StateMachine
     step :three
     step :four
   end
+
+  def guard_one
+    false
+  end
+
+  def after_one
+    logger.info 'After one'
+  end
+
+  def before_one
+    logger.info 'Before one'
+  end
 end
