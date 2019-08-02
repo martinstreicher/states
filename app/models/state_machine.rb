@@ -59,6 +59,8 @@ class StateMachine
     def plan(options = {})
       raise ArgumentError, 'no block provided' unless block_given?
 
+      self.states_cache = []
+
       yield
 
       modified_options = options.symbolize_keys
@@ -70,8 +72,6 @@ class StateMachine
         transition from: states_cache.last, to: end_state
 
         states_cache.each_with_index do |_state, index|
-          byebug
-
           current_state = states_cache[index]
           next_state    = states_cache[index + 1]
           break if next_state.nil?
@@ -94,7 +94,7 @@ class StateMachine
     end
 
     def step(*names)
-      states_cache.push(*names)
+      self.states_cache |= names
 
       names.each do |name|
         instance_eval do

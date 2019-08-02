@@ -25,7 +25,14 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'factory_bot'
   gem 'faker'
+  gem 'guard'
+  gem 'guard-bundler'
+  gem 'guard-migrate'
+  gem 'guard-rspec'
+  gem 'guard-rubocop'
+  gem 'guard-yield'
   gem 'thin'
+  gem 'timecop'
 end
 
 group :development do
@@ -38,11 +45,15 @@ group :development do
   gem 'ruby-prof'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'test-prof'
   gem 'web-console', '>= 3.3.0'
 end
 
 group :test do
   gem 'capybara', '>= 2.15'
   gem 'chromedriver-helper'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'shoulda'
   gem 'selenium-webdriver'
 end
