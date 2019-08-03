@@ -5,6 +5,10 @@
 RSpec.configure do |config|
   Kernel.srand config.seed
 
+  config.define_derived_metadata do |meta|
+    meta[:aggregate_failures] = true
+  end
+
   config.disable_monkey_patching!
   config.example_status_persistence_file_path = 'spec/examples.txt'
 

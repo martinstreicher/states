@@ -14,12 +14,14 @@ gem 'memery'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 5.2.3'
+gem 'recursive-open-struct'
 gem 'sass-rails', '~> 5.0'
 gem 'statesman'
 gem 'statesman-events'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 gem 'wannabe_bool'
+gem 'zeitwerk'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -53,7 +55,8 @@ group :test do
   gem 'capybara', '>= 2.15'
   gem 'chromedriver-helper'
   gem 'rspec'
+  gem 'rspec-its'
   gem 'rspec-rails'
-  gem 'shoulda'
   gem 'selenium-webdriver'
+  gem 'shoulda'
 end

@@ -4,6 +4,10 @@ class StateMachine
   include Statesman::Machine
   include Statesman::Events
 
+  def initialize
+    super nil, association_name: :transitions, transition_class: Transition
+  end
+
   # rubocop:disable Lint/NestedMethodDefinition, Metrics/AbcSize, Metrics/MethodLength
 
   def self.inherited(subclass)
@@ -64,7 +68,7 @@ class StateMachine
       yield
 
       modified_options = options.symbolize_keys
-      end_state        = modified_options.fetch :to, :finish
+      end_state        = modified_options.fetch :to, %i[expire finish]
       start_state      = modified_options.fetch :from, :start
 
       instance_eval do

@@ -6,7 +6,6 @@ require:
 
 AllCops:
   Exclude:
-    - 'Guardfile'
     - 'bin/**/*'
     - 'db/**/*'
   TargetRubyVersion: 2.6.1
@@ -17,6 +16,8 @@ Layout/AlignHash:
 
 Metrics/BlockLength:
   Exclude:
+    - Guardfile
+    - 'spec/**/*spec.rb'
 
 Metrics/LineLength:
   Exclude:
@@ -31,6 +32,9 @@ Rails/HttpPositionalArguments:
   Exclude:
 
 Rails/SkipsModelValidations:
+  Enabled: false
+
+RSpec/MultipleExpectations:
   Enabled: false
 
 Style/Documentation:

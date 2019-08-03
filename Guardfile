@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A sample Guardfile
 # More info at https://github.com/guard/guard#readme
 
@@ -41,8 +43,8 @@ end
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
 
-guard :rspec, cmd: "bundle exec rspec" do
-  require "guard/rspec/dsl"
+guard :rspec, cmd: 'bundle exec rspec' do
+  require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
 
   # Feel free to open issues for suggestions and improvements
@@ -58,7 +60,7 @@ guard :rspec, cmd: "bundle exec rspec" do
   dsl.watch_spec_files_for(ruby.lib_files)
 
   # Rails files
-  rails = dsl.rails(view_extensions: %w(erb haml slim))
+  rails = dsl.rails(view_extensions: %w[erb haml slim])
   dsl.watch_spec_files_for(rails.app_files)
   dsl.watch_spec_files_for(rails.views)
 
@@ -82,22 +84,22 @@ guard :rspec, cmd: "bundle exec rspec" do
   # Turnip features and steps
   watch(%r{^spec/acceptance/(.+)\.feature$})
   watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$}) do |m|
-    Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
+    Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance'
   end
 end
 
 guard :rubocop do
-  watch(%r{.+\.rb$})
+  watch(/.+\.rb$/)
   watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
 end
 
 # Example 1: Run a single command whenever a file is added
 
 notifier = proc do |title, _, changes|
-  Guard::Notifier.notify(changes * ",", title: title )
+  Guard::Notifier.notify(changes * ',', title: title)
 end
 
-guard :yield, { run_on_additions: notifier, object: "Add missing specs!" } do
+guard :yield, run_on_additions: notifier, object: 'Add missing specs!' do
   watch(/^(.*)\.rb$/) { |m| "spec/#{m}_spec.rb" }
 end
 
@@ -105,14 +107,14 @@ end
 
 require 'logger'
 yield_options = {
-  object: ::Logger.new(STDERR), # passed to every other call
+  object:               ::Logger.new(STDERR), # passed to every other call
 
-  start: proc { |logger| logger.level = Logger::INFO },
-  stop: proc { |logger| logger.info "Guard::Yield - Done!" },
+  start:                proc { |logger| logger.level = Logger::INFO },
+  stop:                 proc { |logger| logger.info 'Guard::Yield - Done!' },
 
   run_on_modifications: proc { |log, _, files| log.info "!! #{files * ','}" },
-  run_on_additions: proc { |log, _, files| log.warn "++ #{files * ','}" },
-  run_on_removals: proc { |log, _, files| log.error "xx #{files * ','}" },
+  run_on_additions:     proc { |log, _, files| log.warn "++ #{files * ','}" },
+  run_on_removals:      proc { |log, _, files| log.error "xx #{files * ','}" }
 }
 
 guard :yield, yield_options do
