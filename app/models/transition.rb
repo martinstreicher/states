@@ -5,6 +5,14 @@ class Transition < ApplicationRecord
 
   after_destroy :update_most_recent, if: :most_recent?
 
+  def self.major
+    where minor: false
+  end
+
+  def self.minor
+    where minor: true
+  end
+
   private
 
   def update_most_recent

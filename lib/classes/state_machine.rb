@@ -14,7 +14,7 @@ class StateMachine
     subclass.extend ClassMethods
 
     subclass.instance_eval do
-      class_attribute :states_cache, instance_writer: false, default: []
+      class_attribute :states_cache, instance_writer: false, default: {}
 
       state :expire
       state :finish
@@ -63,7 +63,7 @@ class StateMachine
     def plan(options = {})
       raise ArgumentError, 'no block provided' unless block_given?
 
-      self.states_cache = []
+      self.states_cache = {}
 
       yield
 
@@ -72,39 +72,59 @@ class StateMachine
       start_state      = modified_options.fetch :from, :start
 
       instance_eval do
-        transition from: start_state, to: states_cache.first
-        transition from: states_cache.last, to: end_state
+        state_names = states_cache.keys
+        transition from: start_state, to: state_names.first
+        transition from: state_names.last, to: end_state
 
-        states_cache.each_with_index do |_state, index|
-          current_state = states_cache[index]
-          next_state    = states_cache[index + 1]
+        state_names.each_with_index do |_state, index|
+          current_state = state_names[index]
+          next_state    = state_names[index + 1]
           break if next_state.nil?
 
-          transition from: current_state, to: next_state
-
-          after_transition(to: current_state) do |record, transition|
-            call_if_defined "after_#{current_state}", record, transition
-          end
-
-          before_transition(to: current_state) do |record, transition|
-            call_if_defined "before_#{current_state}", record, transition
-          end
-
-          guard_transition(to: current_state) do |record|
-            call_if_defined "guard_#{current_state}", record
-          end
+          add_transitions current_state, next_state
         end
       end
     end
 
     def step(*names)
-      self.states_cache |= names
+      state_names = names.flat_map do |name|
+        modified_state    = name.clone
+        modified_state    = { name => [] } unless modified_state.respond_to?(:keys)
+        self.states_cache = states_cache.merge modified_state
+        modified_state.keys
+      end
 
-      names.each do |name|
+      state_names.each do |name|
         instance_eval do
-          state name
+          state name, minor: false
         end
       end
+    end
+
+    private
+
+    def add_transitions(current_state, next_state)
+      add_minor_transitions current_state, next_state
+      add_major_transitions current_state, next_state
+    end
+
+    def add_major_transitions(current_state, next_state)
+      transition from: current_state, to: next_state
+
+      after_transition(to: current_state) do |record, transition|
+        call_if_defined "after_#{current_state}", record, transition
+      end
+
+      before_transition(to: current_state) do |record, transition|
+        call_if_defined "before_#{current_state}", record, transition
+      end
+
+      guard_transition(to: current_state) do |record|
+        call_if_defined "guard_#{current_state}", record
+      end
+    end
+
+    def add_minor_transitions(current_state, next_state)
     end
   end
 

@@ -3,7 +3,7 @@
 class ScriptStateMachine < StateMachine
   # steps :one, two: %i[three four]
   plan do
-    step :one
+    step :one, retries: [10.minutes, 20.minutes]
     step :two
   end
 
