@@ -72,9 +72,7 @@ class StateMachine
       start_state      = modified_options.fetch :from, :start
 
       instance_eval do
-        state_names = states_cache.keys
-        transition from: start_state, to: state_names.first
-        transition from: state_names.last, to: end_state
+        state_names = [start_state, *states_cache.keys, end_state]
 
         state_names.each_with_index do |_state, index|
           current_state = state_names[index]
@@ -87,16 +85,14 @@ class StateMachine
     end
 
     def step(*names)
-      state_names = names.flat_map do |name|
-        modified_state    = name.clone
-        modified_state    = { name => [] } unless modified_state.respond_to?(:keys)
-        self.states_cache = states_cache.merge modified_state
-        modified_state.keys
-      end
+      options     = []
+      state_names = names.clone
+      options     = names.last.respond_to?(:keys) ? state_names.pop : {}
+      state_names.each { |state| self.states_cache = states_cache.merge(state => options) }
 
-      state_names.each do |name|
+      states_cache.keys.each do |name|
         instance_eval do
-          state name, minor: false
+          state name
         end
       end
     end
@@ -124,7 +120,21 @@ class StateMachine
       end
     end
 
-    def add_minor_transitions(current_state, next_state)
+    def add_minor_transitions(state, next_state)
+      current_state = state
+      next_retry    = nil
+      retries       = (states_cache[state] || {})[:retries]
+      retries     ||= []
+
+      retries.each_with_index do |offset, index|
+        next_retry = "#{state}_attempt_#{offset.to_i}"
+        state next_retry
+        transition from: current_state, to: next_retry
+        transition from: next_retry, to: next_state
+        break if retries[index + 1].nil?
+
+        current_state = next_retry
+      end
     end
   end
 

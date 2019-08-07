@@ -8,7 +8,7 @@ RSpec.describe StateMachine do
 
     plan do
       step :a
-      step :b
+      step :b, retries: [10.minutes, 15.minutes]
     end
 
     def before_a
@@ -24,7 +24,8 @@ RSpec.describe StateMachine do
       it 'creates a transition from :start to the first state' do
         expect(transitions.start).to include('a')
         expect(transitions.a).to match_array(%w[b])
-        expect(transitions.b).to match_array(%w[expire finish])
+        expect(transitions.b).to match_array(["b_attempt_#{10.minutes}", 'expire', 'finish'])
+        expect(transitions.b_attempt_600).to match_array(["b_attempt_#{15.minutes}", 'expire', 'finish'])
       end
     end
   end
