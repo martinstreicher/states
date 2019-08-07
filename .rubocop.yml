@@ -14,6 +14,18 @@ Layout/AlignHash:
   EnforcedColonStyle: table
   EnforcedHashRocketStyle: table
 
+Layout/MultilineArrayLineBreaks:
+  Enabled: true
+
+Layout/MultilineAssignmentLayout:
+  Enabled: true
+
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
+Layout/MultilineMethodArgumentLineBreaks:
+  Enabled: true
+
 Metrics/BlockLength:
   Exclude:
     - Guardfile

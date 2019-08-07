@@ -95,9 +95,10 @@ end
 
 # Example 1: Run a single command whenever a file is added
 
-notifier = proc do |title, _, changes|
-  Guard::Notifier.notify(changes * ',', title: title)
-end
+notifier =
+  proc do |title, _, changes|
+    Guard::Notifier.notify(changes * ',', title: title)
+  end
 
 guard :yield, run_on_additions: notifier, object: 'Add missing specs!' do
   watch(/^(.*)\.rb$/) { |m| "spec/#{m}_spec.rb" }
