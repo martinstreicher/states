@@ -117,11 +117,6 @@ class StateMachine
       end
     end
 
-    def add_transitions(current_state, next_state)
-      add_major_transitions current_state, next_state
-      add_minor_transitions current_state, next_state
-    end
-
     def add_major_transitions(current_state, next_state)
       transition from: current_state, to: next_state
       add_callbacks_and_guards next_state
@@ -143,6 +138,11 @@ class StateMachine
 
         current_state = next_retry
       end
+    end
+
+    def add_transitions(current_state, next_state)
+      add_major_transitions current_state, next_state
+      add_minor_transitions current_state, next_state
     end
   end
 

@@ -7,7 +7,7 @@ RSpec.describe StateMachine do
     TestException = Class.new(RuntimeError)
 
     plan do
-      step :a
+      step :a, expire: false
       step :b, retries: [10.minutes, 15.minutes]
     end
 
@@ -34,15 +34,35 @@ RSpec.describe StateMachine do
     subject(:machine) { TestMachine.new }
 
     describe '#states' do
-      it 'returns a list of all states' do
+      it 'includes the list of pre-defined states' do
+        expect(machine.states).to include('expire', 'finish', 'start')
+      end
+
+      it 'includes the list of defined states' do
         expect(machine.states).to include('a', 'b')
       end
-    end
-  end
 
-  describe 'Internal Operations' do
-    it 'define :start, :finish, and :expire' do
-      expect(transitions.start).to include('expire', 'finish')
+      it 'includes the list of derived states' do
+        expect(machine.states).to include('b_retry_one', 'b_retry_two')
+      end
+    end
+
+    describe 'transitions' do
+      it 'includes paths via the pre-defined states' do
+        expect(transitions.pending).to match_array(%w[start])
+        expect(transitions.start).to include('expire', 'finish')
+      end
+
+      it 'includes paths between the defined states' do
+        expect(transitions.start).to include('a')
+        expect(transitions.a).to match_array(['b'])
+      end
+
+      it 'includes paths via the derived states' do
+        expect(transitions.b).to match_array(%w[b_retry_one expire finish])
+        expect(transitions.b_retry_one).to match_array(%w[b_retry_two expire finish])
+        expect(transitions.b_retry_two).to match_array(%w[expire finish])
+      end
     end
   end
 
