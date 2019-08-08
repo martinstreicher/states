@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class StateMachine
+  END_STATES        = %i[expire finish].freeze
+  START_STATE       = :start
+  PREDEFINED_STATES = [START_STATE, *END_STATES].freeze
+
   include Statesman::Machine
   include Statesman::Events
 
@@ -16,24 +20,21 @@ class StateMachine
     subclass.instance_eval do
       class_attribute :states_cache, instance_writer: false, default: {}
 
-      state :expire
-      state :finish
+      PREDEFINED_STATES.each { |state_name| state state_name }
       state :pending, initial: true
-      state :start
+      transition from: :pending, to: START_STATE
+      transition from: START_STATE, to: END_STATES
 
-      transition from: :pending, to: :start
-      transition from: :start,   to: %i[expire finish]
+      PREDEFINED_STATES.each do |state_name|
+        method_name = "before_#{state_name}"
 
-      before_transition(to: :finish) do |record, transition|
-        record.finish(transition) if record.respond_to?(:finish)
-      end
+        before_transition(to: state_name) do |record, transition|
+          record.send(method_name, transition) if record.respond_to?(method_name)
+        end
 
-      before_transition(from: :pending, to: :start) do |record, transition|
-        record.start(transition) if record.respond_to?(:start)
-      end
-
-      before_transition(to: :expire) do |record, transition|
-        record.expire(transition) if record.respond_to?(:expire)
+        guard_transition(to: state_name) do |record, transition|
+          call_if_defined "can_transition_to_#{state_name}?", record, transition
+        end
       end
     end
 
@@ -68,8 +69,8 @@ class StateMachine
       yield
 
       modified_options = options.symbolize_keys
-      end_state        = modified_options.fetch :to, %i[expire finish]
-      start_state      = modified_options.fetch :from, :start
+      end_state        = modified_options.fetch :to, END_STATES
+      start_state      = modified_options.fetch :from, START_STATE
 
       instance_eval do
         state_names = [start_state, *states_cache.keys, end_state]
@@ -90,7 +91,7 @@ class StateMachine
       options     = names.last.respond_to?(:keys) ? state_names.pop : {}
       state_names.each { |state| self.states_cache = states_cache.merge(state => options) }
 
-      states_cache.keys.each do |name|
+      state_names.each do |name|
         instance_eval do
           state name
         end
@@ -99,38 +100,45 @@ class StateMachine
 
     private
 
+    def add_callbacks_and_guards(*state_names)
+      # after_transition(to: state) do |record, transition|
+      #   call_if_defined "after_#{state}", record, transition
+      # end
+      filtered_state_names = state_names.flatten.map(&:to_s) - PREDEFINED_STATES
+
+      filtered_state_names.each do |state_name|
+        before_transition(to: state_name) do |record, transition|
+          call_if_defined "before_#{state_name}", record, transition
+        end
+
+        guard_transition(to: state_name) do |record|
+          call_if_defined "can_transition_to_#{state_name}?", record
+        end
+      end
+    end
+
     def add_transitions(current_state, next_state)
-      add_minor_transitions current_state, next_state
       add_major_transitions current_state, next_state
+      add_minor_transitions current_state, next_state
     end
 
     def add_major_transitions(current_state, next_state)
       transition from: current_state, to: next_state
-
-      after_transition(to: current_state) do |record, transition|
-        call_if_defined "after_#{current_state}", record, transition
-      end
-
-      before_transition(to: current_state) do |record, transition|
-        call_if_defined "before_#{current_state}", record, transition
-      end
-
-      guard_transition(to: current_state) do |record|
-        call_if_defined "guard_#{current_state}", record
-      end
+      add_callbacks_and_guards next_state
     end
 
-    def add_minor_transitions(state, next_state)
-      current_state = state
+    def add_minor_transitions(previous_state, next_state)
+      current_state = previous_state
       next_retry    = nil
-      retries       = (states_cache[state] || {})[:retries]
+      retries       = (states_cache[previous_state] || {})[:retries]
       retries     ||= []
 
-      retries.each_with_index do |offset, index|
-        next_retry = "#{state}_attempt_#{offset.to_i}"
+      retries.each_with_index do |_offset, index|
+        next_retry = "#{previous_state}_retry_#{(index + 1).humanize}"
         state next_retry
         transition from: current_state, to: next_retry
-        transition from: next_retry, to: next_state
+        transition from: next_retry,    to: next_state
+        add_callbacks_and_guards next_retry, next_state
         break if retries[index + 1].nil?
 
         current_state = next_retry

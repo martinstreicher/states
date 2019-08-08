@@ -24,8 +24,8 @@ RSpec.describe StateMachine do
       it 'creates a transition from :start to the first state' do
         expect(transitions.start).to include('a')
         expect(transitions.a).to match_array(%w[b])
-        expect(transitions.b).to match_array(["b_attempt_#{10.minutes}", 'expire', 'finish'])
-        expect(transitions.b_attempt_600).to match_array(["b_attempt_#{15.minutes}", 'expire', 'finish'])
+        expect(transitions.b).to match_array(%w[b_retry_one expire finish])
+        expect(transitions.b_retry_one).to match_array(%w[b_retry_two expire finish])
       end
     end
   end
