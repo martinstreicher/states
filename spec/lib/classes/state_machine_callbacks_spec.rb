@@ -39,17 +39,25 @@ RSpec.describe StateMachine do
 
   describe 'Callbacks' do
     context 'when transitioning to a state' do
-      it 'calls the proper callbacks' do
+      it 'calls the proper callback for start' do
         allow(state_machine).to receive(:before_start)
         model.transition_to :start
         expect(state_machine).to have_received(:before_start)
       end
 
-      it 'calls' do
+      it 'calls the proper callback for transition to a' do
         model.transition_to :start
         allow(state_machine).to receive(:before_a)
         model.transition_to :a
         expect(state_machine).to have_received(:before_a)
+      end
+
+      it 'calls the proper callback for transition to b' do
+        model.transition_to :start
+        model.transition_to :a
+        allow(state_machine).to receive(:before_b)
+        model.transition_to :b
+        expect(state_machine).to have_received(:before_b)
       end
     end
   end

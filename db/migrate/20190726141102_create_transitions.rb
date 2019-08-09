@@ -16,7 +16,7 @@ class CreateTransitions < ActiveRecord::Migration[5.2]
       name: :tid_ttype_minor
 
     add_index :transitions, %i[transitionable_id transitionable_type most_recent],
-      name: :tid_ttype_most_recent, unique: true
+      name: :tid_ttype_most_recent, unique: true, where: 'most_recent IS true'
 
     add_index :transitions, %i[transitionable_id transitionable_type sort_key],
       name: :tid_ttype_sort_key, unique: true
