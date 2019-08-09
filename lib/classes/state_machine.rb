@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 class StateMachine
+  include Statesman::Machine
+  include Statesman::Events
+
   END_STATES        = %i[expire finish].freeze
   START_STATE       = :start
   PREDEFINED_STATES = [START_STATE, *END_STATES].freeze
 
-  include Statesman::Machine
-  include Statesman::Events
+  delegate_missing_to :object
 
-  def initialize
-    super nil, association_name: :transitions, transition_class: Transition
+  def initialize(instance = nil, association_name: :transitions, transition_class: Transition)
+    super(
+      instance,
+      association_name: association_name,
+      transition_class: transition_class
+    )
   end
 
   # rubocop:disable Lint/NestedMethodDefinition, Metrics/AbcSize, Metrics/MethodLength
@@ -26,10 +32,8 @@ class StateMachine
       transition from: START_STATE, to: END_STATES
 
       PREDEFINED_STATES.each do |state_name|
-        method_name = "before_#{state_name}"
-
         before_transition(to: state_name) do |record, transition|
-          record.send(method_name, transition) if record.respond_to?(method_name)
+          call_if_defined "before_#{state_name}", record, transition
         end
 
         guard_transition(to: state_name) do |record, transition|

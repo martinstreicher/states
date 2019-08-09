@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_213750) do
     t.string "to_state", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["transitionable_id", "transitionable_type", "minor"], name: "tid_ttype_minor", unique: true
+    t.index ["transitionable_id", "transitionable_type", "minor"], name: "tid_ttype_minor"
     t.index ["transitionable_id", "transitionable_type", "most_recent"], name: "tid_ttype_most_recent", unique: true
     t.index ["transitionable_id", "transitionable_type", "sort_key"], name: "tid_ttype_sort_key", unique: true
     t.index ["transitionable_id", "transitionable_type"], name: "index_transitions_on_transitionable_id_and_transitionable_type"

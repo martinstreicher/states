@@ -3,20 +3,16 @@
 RSpec.describe StateMachine do
   # rubocop:disable RSpec/LeakyConstantDeclaration
 
-  class TestMachine < described_class
+  class StatesTestMachine < described_class
     TestException = Class.new(RuntimeError)
 
     plan do
-      step :a, expire: false
+      step :a
       step :b, retries: [10.minutes, 15.minutes]
-    end
-
-    def before_a
-      raise TestException, 'Before a'
     end
   end
 
-  let(:machine_class) { TestMachine }
+  let(:machine_class) { StatesTestMachine }
   let(:transitions)   { RecursiveOpenStruct.new machine_class.successors }
 
   describe 'Class Methods' do
@@ -31,7 +27,7 @@ RSpec.describe StateMachine do
   end
 
   describe 'Instance Methods' do
-    subject(:machine) { TestMachine.new }
+    subject(:machine) { machine_class.new }
 
     describe '#states' do
       it 'includes the list of pre-defined states' do
