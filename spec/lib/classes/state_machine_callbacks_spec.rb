@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe StateMachine do
-  # rubocop:disable RSpec/LeakyConstantDeclaration
+  include_context 'with an active record model', class_name: 'Widget'
 
-  include_context 'with an active record model'
+  # rubocop:disable RSpec/LeakyConstantDeclaration
 
   class WidgetStateMachine < described_class
     TestException = Class.new(RuntimeError)
@@ -13,26 +13,18 @@ RSpec.describe StateMachine do
       step :b, retries: [10.minutes, 15.minutes]
     end
 
-    def before_a
-      puts 'Before a'
-    end
+    def before_a; end
 
-    def before_b
-      raise 'Before b'
-    end
+    def before_b; end
 
-    def before_b_retry_one
-      raise 'Before b retry one'
-    end
+    def before_b_retry_one; end
 
-    def before_b_retry_two
-      raise 'Before b retry two'
-    end
+    def before_b_retry_two; end
 
-    def before_start
-      'Before start'
-    end
+    def before_start; end
   end
+
+  # rubocop:enable RSpec/LeakyConstantDeclaration
 
   let(:machine_class) { WidgetStateMachine }
   let(:transitions)   { RecursiveOpenStruct.new machine_class.successors }
@@ -55,12 +47,29 @@ RSpec.describe StateMachine do
       it 'calls the proper callback for transition to b' do
         model.transition_to :start
         model.transition_to :a
+
         allow(state_machine).to receive(:before_b)
         model.transition_to :b
         expect(state_machine).to have_received(:before_b)
       end
+
+      it 'calls the proper callback for transition to b_retry_one' do
+        model.transition_to :start
+        model.transition_to :a
+        model.transition_to :b
+
+        allow(state_machine).to receive(:before_b_retry_one)
+        model.transition_to :b_retry_one
+        expect(state_machine).to have_received(:before_b_retry_one)
+      end
+
+      it 'does not callback if the handler does not exist' do
+        model.transition_to :start
+        model.transition_to :a
+        model.transition_to :b
+
+        expect(model.transition_to(:finish)).to be_truthy
+      end
     end
   end
-
-  # rubocop:enable RSpec/LeakyConstantDeclaration
 end

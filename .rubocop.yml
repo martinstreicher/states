@@ -46,6 +46,9 @@ Rails/HttpPositionalArguments:
 Rails/SkipsModelValidations:
   Enabled: false
 
+RSpec/ExampleLength:
+  Max: 10
+
 RSpec/MultipleExpectations:
   Enabled: false
 
