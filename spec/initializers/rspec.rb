@@ -5,6 +5,12 @@
 RSpec.configure do |config|
   Kernel.srand config.seed
 
+  config.before(:suite) do
+    FactoryBot.lint if ENV['SKIP_FACTORY_BOT_LINT'].blank?
+  end
+
+  config.default_formatter = 'doc' if config.files_to_run.one?
+
   config.define_derived_metadata do |meta|
     meta[:aggregate_failures] = true
   end
@@ -16,8 +22,8 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-  config.default_formatter = 'doc' if config.files_to_run.one?
   config.filter_run_when_matching :focus
+  config.include FactoryBot::Syntax::Methods
 
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
@@ -25,7 +31,6 @@ RSpec.configure do |config|
 
   config.order = :random
   config.profile_examples = 10
-
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.warnings = true
 end

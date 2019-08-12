@@ -72,6 +72,8 @@ guard :rspec, cmd: 'bundle exec rspec' do
     ]
   end
 
+  watch(%r{^spec/factories/(.+)\.rb$}) { 'spec' }
+
   # Rails config changes
   watch(rails.spec_helper)     { rspec.spec_dir }
   watch(rails.routes)          { "#{rspec.spec_dir}/routing" }

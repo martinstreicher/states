@@ -42,6 +42,11 @@ class StateMachine
       end
     end
 
+    def effective_current_state
+      effective_state = current_state.gsub(/_retry_.*\z/, '')
+      current_state.match?(/\A.*_retry_/) ? effective_state : current_state
+    end
+
     def states
       self.class.states
     end

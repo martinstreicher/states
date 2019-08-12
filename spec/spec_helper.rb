@@ -13,6 +13,7 @@ require 'test_prof/recipes/rspec/let_it_be'
 begin
   spec_dir        = File.dirname(__FILE__)
   config_files    = File.join(spec_dir, 'initializers/**/*.rb')
+  factories       = File.join(spec_dir, 'factories/**/*.rb')
   shared_contexts = File.join(spec_dir, 'shared_contexts/**/*.rb')
   shared_examples = File.join(spec_dir, 'shared_examples/**/*.rb')
   support_files   = File.join(spec_dir, 'support/**/*.rb')
@@ -21,6 +22,7 @@ begin
     config_files,
     shared_contexts,
     shared_examples,
+    factories,
     support_files
   ]
 

@@ -14,14 +14,22 @@ RSpec.describe StateMachine do
     end
 
     def can_transition_to_a?; end
-
-    def can_transition_to_b?; end
   end
 
   # rubocop:enable RSpec/LeakyConstantDeclaration
 
   describe 'Guards' do
-    context 'when can_transition_to*? responds true' do
+    context 'when no guard method exists' do
+      it 'advances state unconditionally' do
+        model.transition_to :start
+        allow(state_machine).to(receive(:can_transition_to_a?).and_return(true))
+        model.transition_to :a
+        model.transition_to :b
+        expect(model.current_state).to eq('b')
+      end
+    end
+
+    context 'when guard method responds true' do
       it 'changes state' do
         model.transition_to :start
         allow(state_machine).to(receive(:can_transition_to_a?).and_return(true))
@@ -31,7 +39,7 @@ RSpec.describe StateMachine do
       end
     end
 
-    context 'when can_transition_to_*? responds false' do
+    context 'when guard method responds false' do
       it 'changes state' do
         model.transition_to :start
         allow(state_machine).to(receive(:can_transition_to_a?).and_return(false))

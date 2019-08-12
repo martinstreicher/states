@@ -8,6 +8,8 @@ ruby '2.6.2'
 
 gem 'awesome_print'
 gem 'bootsnap', '>= 1.1.0', require: false
+gem 'by_star'
+gem 'chronic'
 gem 'coffee-rails', '~> 4.2'
 gem 'humanize'
 gem 'jbuilder', '~> 2.5'
@@ -19,6 +21,7 @@ gem 'recursive-open-struct'
 gem 'sass-rails', '~> 5.0'
 gem 'statesman'
 gem 'statesman-events'
+gem 'table_print'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 gem 'wannabe_bool'
@@ -36,6 +39,7 @@ group :development, :test do
   gem 'guard-yield'
   gem 'thin'
   gem 'timecop'
+  gem 'uuid'
 end
 
 group :development do

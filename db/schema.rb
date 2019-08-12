@@ -28,15 +28,19 @@ ActiveRecord::Schema.define(version: 2019_07_26_213750) do
   end
 
   create_table "transitions", force: :cascade do |t|
+    t.datetime "expire_at"
     t.json "metadata", default: {}
     t.boolean "minor", default: false, null: false
     t.boolean "most_recent", null: false
-    t.string "transitionable_type", null: false
-    t.bigint "transitionable_id", null: false
     t.integer "sort_key", null: false
     t.string "to_state", null: false
+    t.datetime "transition_at"
+    t.string "transitionable_type", null: false
+    t.bigint "transitionable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["expire_at"], name: "index_transitions_on_expire_at", where: "(expire_at IS NOT NULL)"
+    t.index ["transition_at"], name: "index_transitions_on_transition_at", where: "(transition_at IS NOT NULL)"
     t.index ["transitionable_id", "transitionable_type", "minor"], name: "tid_ttype_minor"
     t.index ["transitionable_id", "transitionable_type", "most_recent"], name: "tid_ttype_most_recent", unique: true, where: "(most_recent IS TRUE)"
     t.index ["transitionable_id", "transitionable_type", "sort_key"], name: "tid_ttype_sort_key", unique: true
