@@ -2,7 +2,6 @@
 
 RSpec.describe StateMachine do
   # rubocop:disable RSpec/LeakyConstantDeclaration
-
   class StatesTestMachine < described_class
     TestException = Class.new(RuntimeError)
 
@@ -11,6 +10,7 @@ RSpec.describe StateMachine do
       step :b, retries: [10.minutes, 15.minutes]
     end
   end
+  # rubocop:enable RSpec/LeakyConstantDeclaration
 
   let(:machine_class) { StatesTestMachine }
   let(:transitions)   { RecursiveOpenStruct.new machine_class.successors }
@@ -61,6 +61,4 @@ RSpec.describe StateMachine do
       end
     end
   end
-
-  # rubocop:enable RSpec/LeakyConstantDeclaration
 end
