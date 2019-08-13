@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_213750) do
     t.datetime "expire_at"
     t.json "metadata", default: {}
     t.boolean "minor", default: false, null: false
-    t.boolean "most_recent", null: false
+    t.boolean "most_recent", default: false, null: false
     t.integer "sort_key", null: false
     t.string "to_state", null: false
     t.datetime "transition_at"

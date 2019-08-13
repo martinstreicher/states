@@ -5,7 +5,7 @@ module Transitionable
   include Memery
   include Statesman::Adapters::ActiveRecordQueries
 
-  included do
+  included do # rubocop:disable Metrics/BlockLength
     has_many :transitions, as: :transitionable, dependent: :destroy
 
     delegate(
@@ -19,12 +19,16 @@ module Transitionable
       to: :state_machine
     )
 
-    def self.due(at: Time.zone.now.utc)
+    def self.due(at: now)
       joined.merge(transition_class.viable.due(at: at))
     end
 
     def self.expired
       joined.merge(transition_class.expired)
+    end
+
+    def self.initial_state
+      :pending
     end
 
     def self.joined
@@ -43,8 +47,20 @@ module Transitionable
       joined(transitions_class.viable.most_recent)
     end
 
-    def self.scheduled_to_expire(at: Time.zone.now.utc)
-      joined.merge(transition_class.most_recent.after(at, field: :expire_at))
+    def self.now
+      Time.zone.now.utc
+    end
+
+    def self.scheduled_to_expire(at: now)
+      joined.merge(transition_class.most_recent.before(at, field: :expire_at))
+    end
+
+    def self.scheduled_to_transition(at: now)
+      joined.merge(transition_class.most_recent.before(at, field: :transition_at))
+    end
+
+    def self.transition_class
+      Transition
     end
 
     def self.unexpired
@@ -55,15 +71,8 @@ module Transitionable
       joined.merge(transition_class.viable)
     end
 
-    def self.initial_state
-      :pending
-    end
-
-    def self.transition_class
-      Transition
-    end
-
     private_class_method :initial_state
+    private_class_method :now
   end
 
   memoize def state_machine

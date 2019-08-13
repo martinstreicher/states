@@ -5,7 +5,8 @@ tp.set(
   :to_state,
   :most_recent,
   :transition_at,
-  'transitionable.name',
   :expire_at,
+  'transitionable.name',
+  :created_at,
   :metadata
 )

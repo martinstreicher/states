@@ -16,6 +16,7 @@ RSpec.shared_context 'with an active record model' do |class_name:|
 
   Object.const_set(klass_name, Class.new(ApplicationRecord) { include Transitionable })
 
-  let(:model)         { klass_name.constantize.new name: :name }
+  let(:klass)         { klass_name.constantize }
+  let(:model)         { klass.new name: :name }
   let(:state_machine) { model.state_machine }
 end

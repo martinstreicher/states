@@ -45,8 +45,16 @@ class Transition < ApplicationRecord
     viable.where(most_recent: true)
   end
 
-  def self.scheduled_to_expire(at: Time.zone.now.utc)
-    most_recent.after(at, field: :expire_at)
+  def self.now
+    Time.zone.now.utc
+  end
+
+  def self.scheduled_to_expire(at: now)
+    most_recent.before(at, field: :expire_at)
+  end
+
+  def self.scheduled_to_transition(at: now)
+    most_recent.before(at, field: :transition_at)
   end
 
   def self.unexpired
@@ -59,7 +67,7 @@ class Transition < ApplicationRecord
 
   def attempt
     counter = to_state.gsub(/\A.*_/, '')
-    WORDS_TO_NUMBERS[counter]
+    WORDS_TO_NUMBERS[counter] || 0
   end
 
   def effective_state
@@ -69,6 +77,8 @@ class Transition < ApplicationRecord
   def retry?
     to_state.match?(/_retry_/)
   end
+
+  private_class_method :now
 
   private
 

@@ -47,7 +47,7 @@ Rails/SkipsModelValidations:
   Enabled: false
 
 RSpec/ExampleLength:
-  Max: 10
+  Max: 15
 
 RSpec/MultipleExpectations:
   Enabled: false
