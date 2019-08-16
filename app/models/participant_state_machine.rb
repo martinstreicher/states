@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ParticipantStateMachine < StateMachine
+class ParticipantProgram < Program
   state :active
   state :cancelled
   state :finished

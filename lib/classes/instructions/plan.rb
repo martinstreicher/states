@@ -9,9 +9,9 @@ module Instructions
 
       yield
 
-      modified_options = options.symbolize_keys
-      end_state        = modified_options.fetch :to, StateMachine::END_STATES
-      start_state      = modified_options.fetch :from, StateMachine::START_STATE
+      options     = options.symbolize_keys
+      end_state   = options.fetch :to, Program::END_STATES
+      start_state = options.fetch :from, Program::START_STATE
 
       instance_eval do
         state_names = [start_state, *states_cache.keys]
@@ -27,4 +27,4 @@ module Instructions
       end
     end
   end
-end 
+end

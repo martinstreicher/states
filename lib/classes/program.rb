@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StateMachine
+class Program
   include Statesman::Machine
   include Statesman::Events
 
@@ -20,7 +20,10 @@ class StateMachine
 
   # rubocop:disable Lint/NestedMethodDefinition, Metrics/AbcSize, Metrics/MethodLength
   def self.inherited(subclass)
-    subclass.extend StateMachineClassMethods
+    subclass.extend Internals::Callbacks
+    subclass.extend Internals::Transitions
+    subclass.extend Instructions::Plan
+    subclass.extend Instructions::Step
 
     subclass.instance_eval do
       class_attribute :states_cache, instance_writer: false, default: {}

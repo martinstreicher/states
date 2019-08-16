@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe StateMachine do
+RSpec.describe Program do
   # rubocop:disable RSpec/LeakyConstantDeclaration
-  class StatesTestMachine < described_class
+  class StatesTestProgram < described_class
     TestException = Class.new(RuntimeError)
 
     plan do
@@ -12,7 +12,7 @@ RSpec.describe StateMachine do
   end
   # rubocop:enable RSpec/LeakyConstantDeclaration
 
-  let(:machine_class) { StatesTestMachine }
+  let(:machine_class) { StatesTestProgram }
   let(:transitions)   { RecursiveOpenStruct.new machine_class.successors }
 
   describe 'Class Methods' do

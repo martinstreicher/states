@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe StateMachine do
+RSpec.describe Program do
   include_context 'with an active record model', class_name: 'Gadget'
 
   # rubocop:disable RSpec/LeakyConstantDeclaration
 
-  class GadgetStateMachine < described_class
+  class GadgetProgram < described_class
     TestException = Class.new(RuntimeError)
 
     plan do

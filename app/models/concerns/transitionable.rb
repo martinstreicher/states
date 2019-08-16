@@ -76,7 +76,7 @@ module Transitionable
   end
 
   memoize def state_machine
-    "#{self.class.name}StateMachine"
+    "#{self.class.name}Program"
       .constantize
       .new(
         self,

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ScriptStateMachine < StateMachine
+class ScriptProgram < Program
   # steps :one, two: %i[three four]
   plan do
     step :one, retries: [10.minutes, 20.minutes]

@@ -5,7 +5,7 @@ RSpec.describe Transition do
 
   describe 'Scopes' do
     # rubocop:disable RSpec/LeakyConstantDeclaration
-    class SprocketStateMachine < StateMachine
+    class SprocketProgram < Program
       TestException = Class.new(RuntimeError)
 
       plan do

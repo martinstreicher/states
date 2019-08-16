@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe StateMachine do
+RSpec.describe Program do
   include_context 'with an active record model', class_name: 'Widget'
 
   # rubocop:disable RSpec/LeakyConstantDeclaration
 
-  class WidgetStateMachine < described_class
+  class WidgetProgram < described_class
     TestException = Class.new(RuntimeError)
 
     plan do
@@ -26,7 +26,7 @@ RSpec.describe StateMachine do
 
   # rubocop:enable RSpec/LeakyConstantDeclaration
 
-  let(:machine_class) { WidgetStateMachine }
+  let(:machine_class) { WidgetProgram }
   let(:transitions)   { RecursiveOpenStruct.new machine_class.successors }
 
   describe 'Callbacks' do

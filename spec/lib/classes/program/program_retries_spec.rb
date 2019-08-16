@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe StateMachine do
+RSpec.describe Program do
   include_context 'with an active record model', class_name: 'Gizmo'
 
   let(:now) { Time.zone.now }
 
   # rubocop:disable RSpec/LeakyConstantDeclaration
-  class GizmoStateMachine < described_class
+  class GizmoProgram < described_class
     TestException = Class.new(RuntimeError)
 
     plan do
