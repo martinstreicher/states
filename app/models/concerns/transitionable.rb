@@ -76,12 +76,12 @@ module Transitionable
   end
 
   memoize def state_machine
-    klass = "#{self.class.name}StateMachine".constantize
-
-    klass.new(
-      self,
-      association_name: :transitions,
-      transition_class: Transition
-    )
+    "#{self.class.name}StateMachine"
+      .constantize
+      .new(
+        self,
+        association_name: :transitions,
+        transition_class: Transition
+      )
   end
 end

@@ -24,14 +24,15 @@ module StateMachineClassMethods
     start_state      = modified_options.fetch :from, StateMachine::START_STATE
 
     instance_eval do
-      state_names = [start_state, *states_cache.keys, end_state]
+      state_names = [start_state, *states_cache.keys]
 
       state_names.each_with_index do |_state, index|
         current_state = state_names[index]
-        next_state    = state_names[index + 1]
-        break if next_state.nil?
-
+        next_state    = Array(state_names[index + 1] || [])
+        next_state   += end_state unless current_state == :start
         add_transitions current_state, next_state
+
+        break if next_state.nil?
       end
     end
   end

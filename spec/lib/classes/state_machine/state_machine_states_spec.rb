@@ -19,7 +19,7 @@ RSpec.describe StateMachine do
     describe '.plan' do
       it 'creates a transition from :start to the first state' do
         expect(transitions.start).to include('a')
-        expect(transitions.a).to match_array(%w[b])
+        expect(transitions.a).to match_array(%w[b expire finish])
         expect(transitions.b).to match_array(%w[b_retry_one expire finish])
         expect(transitions.b_retry_one).to match_array(%w[b_retry_two expire finish])
       end
@@ -51,7 +51,7 @@ RSpec.describe StateMachine do
 
       it 'includes paths between the defined states' do
         expect(transitions.start).to include('a')
-        expect(transitions.a).to match_array(['b'])
+        expect(transitions.a).to match_array(%w[b expire finish])
       end
 
       it 'includes paths via the derived states' do
