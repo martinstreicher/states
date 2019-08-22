@@ -19,7 +19,7 @@ RSpec.describe Transition do
 
     context 'with #scheduled_to_expire' do
       it 'finds models about to expire' do
-        another_model = klass.new name: UUID.generate
+        another_model = klass.new name: 'Sprocket'
         another_model.transition_to :start
         model.transition_to :start
         model.transition_to :a
@@ -29,7 +29,7 @@ RSpec.describe Transition do
 
     context 'with #scheduled_to_transition' do
       it 'finds models that must be advanced' do
-        another_model = klass.new name: UUID.generate
+        another_model = klass.new name: 'Sprocket'
         another_model.transition_to :start
         model.transition_to :start
         model.transition_to :a

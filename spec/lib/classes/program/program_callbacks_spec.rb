@@ -26,9 +26,6 @@ RSpec.describe Program do
 
   # rubocop:enable RSpec/LeakyConstantDeclaration
 
-  let(:machine_class) { WidgetProgram }
-  let(:transitions)   { RecursiveOpenStruct.new machine_class.successors }
-
   describe 'Callbacks' do
     context 'when transitioning to a state' do
       it 'calls the proper callback for start' do

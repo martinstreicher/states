@@ -22,8 +22,11 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
+  config.filter_rails_from_backtrace!
   config.filter_run_when_matching :focus
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.include FactoryBot::Syntax::Methods
+  config.infer_spec_type_from_file_location!
 
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
@@ -32,5 +35,6 @@ RSpec.configure do |config|
   config.order = :random
   config.profile_examples = 10
   config.shared_context_metadata_behavior = :apply_to_host_groups
+  config.use_transactional_fixtures = true
   config.warnings = true
 end

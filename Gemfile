@@ -13,7 +13,7 @@ gem 'chronic'
 gem 'coffee-rails', '~> 4.2'
 gem 'humanize'
 gem 'jbuilder', '~> 2.5'
-gem 'memery'
+gem 'memery', github: 'tycooon/memery', branch: 'master'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 5.2.3'
@@ -49,19 +49,13 @@ group :development do
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
   gem 'rubocop-thread_safety'
-  gem 'ruby-prof'
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'test-prof'
   gem 'web-console', '>= 3.3.0'
 end
 
 group :test do
-  gem 'capybara', '>= 2.15'
-  gem 'chromedriver-helper'
   gem 'rspec'
   gem 'rspec-its'
   gem 'rspec-rails'
-  gem 'selenium-webdriver'
   gem 'shoulda'
 end

@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :script do
-    name  { 'xyz' }
+    association :participant
+    name        { 'xyz' }
   end
 end

@@ -23,8 +23,10 @@ ActiveRecord::Schema.define(version: 2019_07_26_213750) do
 
   create_table "scripts", force: :cascade do |t|
     t.string "name", null: false
+    t.bigint "participant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["participant_id"], name: "index_scripts_on_participant_id"
   end
 
   create_table "transitions", force: :cascade do |t|

@@ -19,6 +19,8 @@ module Transitionable
       to: :state_machine
     )
 
+    delegate :successors, to: :state_machine_class
+
     def self.due(at: now)
       joined.merge(transition_class.viable.due(at: at))
     end
@@ -76,12 +78,18 @@ module Transitionable
   end
 
   memoize def state_machine
-    "#{self.class.name}Program"
+    script_name = ((defined?(name) && name.presence) || self.class.name).classify
+
+    "#{script_name}Program"
       .constantize
       .new(
         self,
         association_name: :transitions,
         transition_class: Transition
       )
+  end
+
+  def state_machine_class
+    state_machine.class
   end
 end

@@ -3,6 +3,8 @@
 class Script < ApplicationRecord
   include Transitionable
 
+  belongs_to :participant, optional: false
+
   def start(_)
     logger.info 'Starting...'
   end

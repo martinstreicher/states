@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_record/validations'
+
 class Program
   include Statesman::Machine
   include Statesman::Events
@@ -20,9 +22,12 @@ class Program
 
   # rubocop:disable Lint/NestedMethodDefinition, Metrics/AbcSize, Metrics/MethodLength
   def self.inherited(subclass)
+    subclass.extend ActiveModel::Validations
     subclass.extend Internals::Callbacks
     subclass.extend Internals::Transitions
+    subclass.extend Internals::Validations
     subclass.extend Instructions::Plan
+    subclass.extend Instructions::Say
     subclass.extend Instructions::Step
 
     subclass.instance_eval do

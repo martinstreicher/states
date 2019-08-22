@@ -6,9 +6,9 @@ require 'byebug'
 require 'factory_bot'
 require 'faker'
 require 'rspec/its'
-require 'timecop'
 require 'shoulda-matchers'
 require 'test_prof/recipes/rspec/let_it_be'
+require 'timecop'
 
 begin
   spec_dir        = File.dirname(__FILE__)

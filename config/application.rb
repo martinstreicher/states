@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'boot'
-require 'rails/all'
-require 'zeitwerk'
 require 'humanize'
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -17,6 +16,6 @@ end
 
 loader = Zeitwerk::Loader.new
 loader.log!
-loader.push_dir(Rails.root.join('lib', 'classes'))
 loader.tag = 'Zeitwerk'
+loader.push_dir(Rails.root.join('lib', 'classes'))
 loader.setup

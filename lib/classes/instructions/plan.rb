@@ -6,9 +6,7 @@ module Instructions
       raise ArgumentError, 'no block provided' unless block_given?
 
       self.states_cache = {}
-
       yield
-
       options     = options.symbolize_keys
       end_state   = options.fetch :to, Program::END_STATES
       start_state = options.fetch :from, Program::START_STATE
