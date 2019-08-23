@@ -19,8 +19,7 @@ class Transition < ApplicationRecord
 
   belongs_to :transitionable, polymorphic: true
 
-  validates :expire_at,     absence: true, if: proc { |r| r.transition_at }
-  validates :transition_at, absence: true, if: proc { |r| r.expire_at }
+  validate :expire_at_before_transition_at, if: proc { |r| r.transition_at }
 
   # TODO: Revisit whether this is needed
   # after_destroy :update_most_recent, if: :most_recent?
@@ -81,6 +80,13 @@ class Transition < ApplicationRecord
   private_class_method :now
 
   private
+
+  def expire_at_before_transition_at
+    return if expire_at.nil? || transition_at.nil?
+    return if expire_at < transition_at
+
+    errors.add(:expire_at, 'occurs after the time to transition')
+  end
 
   def update_most_recent
     last_transition = order.order_transitions.order(:sort_key).last

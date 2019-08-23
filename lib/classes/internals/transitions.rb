@@ -9,7 +9,7 @@ module Internals
       add_callbacks_and_guards next_state
     end
 
-    def add_minor_transitions(previous_state, next_state) # rubocop:disable Metrics/MethodLength
+    def add_minor_transitions(previous_state, next_state)
       current_state = previous_state
       next_retry    = nil
       retries       = (states_cache[previous_state] || {})[:retries]

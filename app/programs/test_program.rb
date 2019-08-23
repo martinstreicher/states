@@ -3,7 +3,7 @@
 class TestProgram < Program
   program do
     say 'Hello!', id: :hello
-    say 'Goodbye', id: :goodbye
+    step :goodbye, expiry: 30.minutes, retries: [1.hour, 2.hours]
   end
 
   def before_start
@@ -12,7 +12,6 @@ class TestProgram < Program
 
   def start
     puts 'In start ' + current_state
-    transition_to :hello
   end
 
   def after_start
@@ -24,10 +23,10 @@ class TestProgram < Program
     puts 'After hello ' + current_state
     transition_to :goodbye
   end
-
-  def before_hello
-    puts 'Before hello ' + current_state
-  end
+  #
+  # def before_hello
+  #   puts 'Before hello ' + current_state
+  # end
 
   def before_goodbye
     puts 'Before goodbye ' + current_state
@@ -35,5 +34,6 @@ class TestProgram < Program
 
   def after_goodbye
     puts 'After goodbye ' + current_state
+    byebug
   end
 end

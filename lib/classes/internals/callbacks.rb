@@ -19,14 +19,14 @@ module Internals
       filtered_state_names = state_names.flatten.map(&:to_sym) - Program::PREDEFINED_STATES
 
       filtered_state_names.each do |state_name|
-        after_transition(to: state_name) do |record, transition|
-          # call_if_defined state_name, record, transition
+        after_transition(to: state_name, after_commit: true) do |record, transition|
           call_if_defined "after_#{state_name}", record, transition
         end
 
         before_transition(to: state_name) do |record, transition|
           send :before, record, transition
           call_if_defined "before_#{state_name}", record, transition
+          call_if_defined state_name, record, transition
         end
 
         guard_transition(to: state_name) do |record|
@@ -60,6 +60,8 @@ module Internals
       attempt_no               = transition.attempt
       options                  = states_cache.fetch transition.effective_state.to_sym, {}
       delay                    = options.fetch(:retries, [])[attempt_no] # 1st -> 0, 2nd -> 1...
+      expiry                   = options.fetch :expiry, nil
+      transition.expire_at     = Time.now.utc + expiry if expiry
       transition.transition_at = first_attempt_at + (delay || 12.hours)
     end
   end

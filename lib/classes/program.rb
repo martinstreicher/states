@@ -39,13 +39,13 @@ class Program
       transition from: START_STATE, to: END_STATES
 
       PREDEFINED_STATES.each do |state_name|
-        after_transition(to: state_name) do |record, transition|
-          # call_if_defined state_name, record, transition
+        after_transition(to: state_name, after_commit: true) do |record, transition|
           call_if_defined "after_#{state_name}", record, transition
         end
 
         before_transition(to: state_name) do |record, transition|
           call_if_defined "before_#{state_name}", record, transition
+          call_if_defined state_name, record, transition
         end
 
         guard_transition(to: state_name) do |record, transition|

@@ -17,12 +17,18 @@ RSpec.describe Transition do
     end
 
     context 'when transition_at is set' do
-      it 'creates an invalid transition' do
+      it 'creates an valid transition' do
         expect(build(:transition, transition_at: now)).to be_valid
       end
     end
 
-    context 'when expire_at and transition_at are set' do
+    context 'when expire_at is before transition_at' do
+      it 'creates an valid transition' do
+        expect(build(:transition, expire_at: now, transition_at: now.tomorrow)).to be_valid
+      end
+    end
+
+    context 'when expire_at and transition_at are the same time' do
       it 'creates an invalid transition' do
         expect(build(:transition, expire_at: now, transition_at: now)).not_to be_valid
       end
