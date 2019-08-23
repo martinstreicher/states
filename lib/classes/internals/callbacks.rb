@@ -16,12 +16,14 @@ module Internals
     private
 
     def add_callbacks_and_guards(*state_names)
-      # after_transition(to: state) do |record, transition|
-      #   call_if_defined "after_#{state}", record, transition
-      # end
-      filtered_state_names = state_names.flatten.map(&:to_s) - Program::PREDEFINED_STATES
+      filtered_state_names = state_names.flatten.map(&:to_sym) - Program::PREDEFINED_STATES
 
       filtered_state_names.each do |state_name|
+        after_transition(to: state_name) do |record, transition|
+          # call_if_defined state_name, record, transition
+          call_if_defined "after_#{state_name}", record, transition
+        end
+
         before_transition(to: state_name) do |record, transition|
           send :before, record, transition
           call_if_defined "before_#{state_name}", record, transition
@@ -31,34 +33,6 @@ module Internals
           call_if_defined "can_transition_to_#{state_name}?", record
         end
       end
-    end
-
-    def add_major_transitions(current_state, next_state)
-      transition from: current_state, to: next_state
-      add_callbacks_and_guards next_state
-    end
-
-    def add_minor_transitions(previous_state, next_state) # rubocop:disable Metrics/MethodLength
-      current_state = previous_state
-      next_retry    = nil
-      retries       = (states_cache[previous_state] || {})[:retries]
-      retries     ||= []
-
-      retries.each_with_index do |_offset, index|
-        next_retry = "#{previous_state}_retry_#{(index + 1).humanize}"
-        state next_retry
-        transition from: current_state, to: next_retry
-        transition from: next_retry,    to: next_state
-        add_callbacks_and_guards next_retry, next_state
-        break if retries[index + 1].nil?
-
-        current_state = next_retry
-      end
-    end
-
-    def add_transitions(current_state, next_state)
-      add_major_transitions current_state, next_state
-      add_minor_transitions current_state, next_state
     end
 
     def before(record, transition)

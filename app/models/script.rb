@@ -5,11 +5,5 @@ class Script < ApplicationRecord
 
   belongs_to :participant, optional: false
 
-  def start(_)
-    logger.info 'Starting...'
-  end
-
-  def step_one(_)
-    logger.info 'Step one...'
-  end
+  validates :name, presence: true
 end

@@ -24,5 +24,7 @@ module Instructions
         end
       end
     end
+
+    alias program plan
   end
 end

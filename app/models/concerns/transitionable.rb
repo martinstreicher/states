@@ -78,7 +78,7 @@ module Transitionable
   end
 
   memoize def state_machine
-    script_name = ((defined?(name) && name.presence) || self.class.name).classify
+    script_name = ((defined?(:name) && name.presence) || self.class.name).classify
 
     "#{script_name}Program"
       .constantize

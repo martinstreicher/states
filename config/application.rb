@@ -15,7 +15,7 @@ module States
 end
 
 loader = Zeitwerk::Loader.new
-loader.log!
+# loader.log!
 loader.tag = 'Zeitwerk'
 loader.push_dir(Rails.root.join('lib', 'classes'))
 loader.setup

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
 class Participant < ApplicationRecord
-  include Transitionable
+  has_many :scripts, dependent: :destroy, inverse_of: :participant
+
+  validates :name, presence: true
 end
