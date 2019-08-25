@@ -3,18 +3,22 @@
 RSpec.describe Program do
   include_context 'with an active record model', class_name: 'Gizmo'
 
-  let(:now) { Time.zone.now }
+  before do
+    exception_class = Class.new(RuntimeError)
 
-  # rubocop:disable RSpec/LeakyConstantDeclaration
-  class GizmoProgram < described_class
-    TestException = Class.new(RuntimeError)
+    gizmo_program_class =
+      Class.new(described_class) do
+        plan do
+          step :a
+          step :b, expiry: 30.minutes, retries: [1.hour, 2.hours]
+        end
+      end
 
-    plan do
-      step :a
-      step :b, expiry: 30.minutes, retries: [1.hour, 2.hours]
-    end
+    stub_const 'GizmoProgram', gizmo_program_class
+    stub_const 'TestException', exception_class
   end
-  # rubocop:enable RSpec/LeakyConstantDeclaration
+
+  let(:now) { Time.zone.now }
 
   describe 'Timing' do
     context 'when the state is a `major` state' do

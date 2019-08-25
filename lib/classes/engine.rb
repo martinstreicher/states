@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Engine
+  def initialize(options = nil)
+    @options = options || {}
+  end
+
   def execute
     #
     # 1/ Expire scripts by changing each script's state to `expire`
@@ -17,4 +21,8 @@ class Engine
 
     # TODO: (3)
   end
+
+  private
+
+  attr_reader :options
 end

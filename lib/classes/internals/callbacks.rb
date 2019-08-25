@@ -50,7 +50,7 @@ module Internals
       transition.expire_at = Time.now.utc + (expiry || 12.hours)
     end
 
-    def before_minor_state(record, transition)
+    def before_minor_state(record, transition) # rubocop:disable Metrics/AbcSize
       first_attempt_at =
         record
         .transitions

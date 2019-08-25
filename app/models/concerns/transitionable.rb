@@ -20,8 +20,6 @@ module Transitionable
       to: :state_machine
     )
 
-    delegate :successors, to: :state_machine_class
-
     def self.due(at: now)
       joined.merge(transition_class.viable.due(at: at))
     end
@@ -80,6 +78,15 @@ module Transitionable
 
   def retry
     next_retry = allowed_transitions.map(&:to_sym) - Program::PREDEFINED_STATES
+
+    unless next_retry.one?
+      next_retry =
+        next_retry.sort_by do |state|
+          Transition::WORDS_TO_NUMBERS.fetch(state.to_s.gsub(/^.*_/, ''))
+        end
+    end
+
+    next_retry.first
   end
 
   memoize def state_machine
@@ -94,7 +101,7 @@ module Transitionable
       )
   end
 
-  def state_machine_class
-    state_machine.class
+  def successors
+    state_machine.class.successors
   end
 end

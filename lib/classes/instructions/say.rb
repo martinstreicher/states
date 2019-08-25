@@ -24,7 +24,7 @@ module Instructions
   module SayInternals
     KINDS = %i[email sms].freeze
 
-    def self.validate(options)
+    def self.validate(options) # rubocop:disable Metrics/AbcSize
       options.extend ActiveModel::Validations
 
       options.errors.tap do |errors|

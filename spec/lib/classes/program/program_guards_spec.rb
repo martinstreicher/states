@@ -3,20 +3,22 @@
 RSpec.describe Program do
   include_context 'with an active record model', class_name: 'Gadget'
 
-  # rubocop:disable RSpec/LeakyConstantDeclaration
+  before do
+    exception_class = Class.new(RuntimeError)
 
-  class GadgetProgram < described_class
-    TestException = Class.new(RuntimeError)
+    gadget_program =
+      Class.new(described_class) do
+        plan do
+          step :a
+          step :b
+        end
 
-    plan do
-      step :a
-      step :b
-    end
+        def can_transition_to_a?; end
+      end
 
-    def can_transition_to_a?; end
+    stub_const 'GadgetProgram', gadget_program
+    stub_const 'TestException', exception_class
   end
-
-  # rubocop:enable RSpec/LeakyConstantDeclaration
 
   describe 'Guards' do
     context 'when no guard method exists' do

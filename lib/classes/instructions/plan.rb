@@ -2,13 +2,13 @@
 
 module Instructions
   module Plan
-    def plan(options = {}) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def plan(options = {}) # rubocop:disable Metrics/AbcSize
       raise ArgumentError, 'no block provided' unless block_given?
 
       self.states_cache = {}
       yield
-      options     = options.symbolize_keys
-      end_state   = options.fetch :to, Program::END_STATES
+      options = options.symbolize_keys
+      end_state = options.fetch :to, Program::END_STATES
       start_state = options.fetch :from, Program::START_STATE
 
       instance_eval do
