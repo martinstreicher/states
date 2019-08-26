@@ -10,7 +10,7 @@ RSpec.describe Transition do
 
       plan do
         step :a
-        step :b, expiry: 30.minutes, retries: [1.hour, 2.hours]
+        step :b, expiry: 3.hours, retries: [1.hour, 2.hours]
       end
     end
     # rubocop:enable RSpec/LeakyConstantDeclaration

@@ -59,10 +59,11 @@ module Internals
 
       attempt_no               = transition.attempt
       options                  = states_cache.fetch transition.effective_state.to_sym, {}
-      delay                    = options.fetch(:retries, [])[attempt_no] # 1st -> 0, 2nd -> 1...
+      retries                  = options.fetch(:retries, [])
+      delay                    = retries[attempt_no] # 1st -> 0, 2nd -> 1...
       expiry                   = options.fetch :expiry, nil
-      transition.expire_at     = Time.now.utc + expiry if expiry
-      transition.transition_at = first_attempt_at + (delay || 12.hours)
+      transition.expire_at     = (first_attempt_at + expiry - 1.second) if expiry
+      transition.transition_at = (first_attempt_at + delay - 1.second) if delay
     end
   end
 end

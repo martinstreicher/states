@@ -12,17 +12,15 @@ class Transition < ApplicationRecord
     'eight'  => 8,
     'nine'   => 9,
     'ten'    => 10,
-    'eleven' => 11
+    'eleven' => 11,
+    'twelve' => 12
   }.freeze
 
   by_star_field :transition_at
 
   belongs_to :transitionable, polymorphic: true
 
-  validate :expire_at_before_transition_at, if: proc { |r| r.transition_at }
-
-  # TODO: Revisit whether this is needed
-  # after_destroy :update_most_recent, if: :most_recent?
+  validate :expiry_after_transition_at, if: proc { |r| r.transition_at }
 
   def self.due(at: Time.zone.now.utc)
     viable.most_recent.before(at)
@@ -81,11 +79,11 @@ class Transition < ApplicationRecord
 
   private
 
-  def expire_at_before_transition_at
+  def expiry_after_transition_at
     return if expire_at.nil? || transition_at.nil?
-    return if expire_at < transition_at
+    return if expire_at > transition_at
 
-    errors.add(:expire_at, 'occurs after the time to transition')
+    errors.add(:expire_at, 'expiry occurs before the transition time')
   end
 
   def update_most_recent

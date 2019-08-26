@@ -16,7 +16,6 @@ RSpec.describe Program do
 
   describe 'it works' do
     it 'works' do
-      byebug
       1
     end
   end

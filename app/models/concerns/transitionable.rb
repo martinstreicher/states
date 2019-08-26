@@ -86,7 +86,7 @@ module Transitionable
         end
     end
 
-    next_retry.first
+    transition_to! next_retry.first
   end
 
   memoize def state_machine

@@ -22,9 +22,9 @@ RSpec.describe Transition do
       end
     end
 
-    context 'when expire_at is before transition_at' do
+    context 'when expire_at is after transition_at' do
       it 'creates an valid transition' do
-        expect(build(:transition, expire_at: now, transition_at: now.tomorrow)).to be_valid
+        expect(build(:transition, expire_at: now.tomorrow, transition_at: now)).to be_valid
       end
     end
 
