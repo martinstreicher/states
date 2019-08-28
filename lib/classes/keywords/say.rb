@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-module Instructions
+module Keywords
   module Say
     DEFAULT_OPTIONS = {
       kind: :sms
     }.freeze
 
     def say(message, options = {})
-      options = options.symbolize_keys.merge(message: message)
+      options = options.symbolize_keys.merge(instruction: :say, message: message)
       options = options.reverse_merge DEFAULT_OPTIONS
       validate options, __method__
 

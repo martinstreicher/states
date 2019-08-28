@@ -13,7 +13,6 @@ module Transitionable
       :can_transition_to?,
       :current_state,
       :effective_current_state,
-      :last_transition,
       :states,
       :transition_to!,
       :transition_to,
@@ -76,6 +75,11 @@ module Transitionable
     private_class_method :now
   end
 
+  def last_transition
+    transitions.order(sort_key: :asc, created_at: :asc).last&.to_state ||
+      self.class.initial_state
+  end
+
   def retry
     next_retry = allowed_transitions.map(&:to_sym) - Program::PREDEFINED_STATES
 
@@ -86,7 +90,7 @@ module Transitionable
         end
     end
 
-    transition_to! next_retry.first
+    transition_to next_retry.first
   end
 
   memoize def state_machine

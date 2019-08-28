@@ -27,6 +27,11 @@ module Internals
           send :before, record, transition
           call_if_defined "before_#{state_name}", record, transition
           call_if_defined state_name, record, transition
+
+          state          = states_cache[state_name] || {}
+          instruction    = state.fetch :instruction, 'Nop'
+          implementation = "Implementations::#{instruction.to_s.classify}".safe_constantize
+          implementation.perform(state, record, transition) if implementation
         end
 
         guard_transition(to: state_name) do |record|
@@ -61,9 +66,21 @@ module Internals
       options                  = states_cache.fetch transition.effective_state.to_sym, {}
       retries                  = options.fetch(:retries, [])
       delay                    = retries[attempt_no] # 1st -> 0, 2nd -> 1...
-      expiry                   = options.fetch :expiry, nil
-      transition.expire_at     = (first_attempt_at + expiry - 1.second) if expiry
+
+      if retries.any? && attempt_no == retries.size
+        expiry = options.fetch :expiry, default_expiry
+        transition.expire_at = (first_attempt_at + expiry - 1.second)
+      end
+
       transition.transition_at = (first_attempt_at + delay - 1.second) if delay
+    end
+
+    def default_expiry
+      Time.zone.now.tomorrow + deadline
+    end
+
+    def deadline
+      ENV.fetch('DEADLINE_HOURS_AFTER_MIDNIGHT', '5').to_i
     end
   end
 end

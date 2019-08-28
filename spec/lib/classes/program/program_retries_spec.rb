@@ -45,7 +45,7 @@ RSpec.describe Program do
         state = model.transitions.find_by(most_recent: true)
         expect(state.to_state).to eq('b')
         expect(state.transition_at).to eq(now + 1.hour - 1.second)
-        expect(state.expire_at).to eq(now + 3.hours - 1.second)
+        expect(state.expire_at).to eq(nil)
       end
 
       it 'assigns a transition_at time to the second attempt (first retry)' do
@@ -59,7 +59,7 @@ RSpec.describe Program do
         state = model.transitions.find_by(most_recent: true)
         expect(state.to_state).to eq('b_retry_one')
         expect(state.transition_at).to eq(now + 2.hours - 1.second)
-        expect(state.expire_at).to eq(now + 3.hours - 1.second)
+        expect(state.expire_at).to eq(nil)
       end
 
       it 'assigns a transition_at time to the third attempt (second retry)' do

@@ -4,16 +4,20 @@ RSpec.describe Transition do
   include_context 'with an active record model', class_name: 'Sprocket'
 
   describe 'Scopes' do
-    # rubocop:disable RSpec/LeakyConstantDeclaration
-    class SprocketProgram < Program
-      TestException = Class.new(RuntimeError)
+    before do
+      exception_class = Class.new(RuntimeError)
 
-      plan do
-        step :a
-        step :b, expiry: 3.hours, retries: [1.hour, 2.hours]
-      end
+      sprocket_program_class =
+        Class.new(Program) do
+          program do
+            step :a
+            step :b, expiry: 3.hours, retries: [1.hour, 2.hours]
+          end
+        end
+
+      stub_const 'SprocketProgram', sprocket_program_class
+      stub_const 'TestException', exception_class
     end
-    # rubocop:enable RSpec/LeakyConstantDeclaration
 
     let(:now) { Time.zone.now }
 

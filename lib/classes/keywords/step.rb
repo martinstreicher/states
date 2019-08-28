@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Instructions
+module Keywords
   module Step
     def step(*names)
       state_names = names.clone

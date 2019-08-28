@@ -26,9 +26,9 @@ class Program
     subclass.extend Internals::Callbacks
     subclass.extend Internals::Transitions
     subclass.extend Internals::Validations
-    subclass.extend Instructions::Plan
-    subclass.extend Instructions::Say
-    subclass.extend Instructions::Step
+    subclass.extend Keywords::Plan
+    subclass.extend Keywords::Say
+    subclass.extend Keywords::Step
 
     subclass.instance_eval do
       class_attribute :states_cache, instance_writer: false, default: {}

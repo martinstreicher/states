@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Instructions
+module Keywords
   module Plan
     def plan(options = {}) # rubocop:disable Metrics/AbcSize
       raise ArgumentError, 'no block provided' unless block_given?
