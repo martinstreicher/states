@@ -31,7 +31,7 @@ module Internals
           state          = states_cache[state_name] || {}
           instruction    = state.fetch :instruction, 'Nop'
           implementation = "Implementations::#{instruction.to_s.classify}".safe_constantize
-          implementation.perform(state, record, transition) if implementation
+          implementation&.perform state, record, transition
         end
 
         guard_transition(to: state_name) do |record|
