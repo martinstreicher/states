@@ -68,15 +68,13 @@ module Internals
       delay                    = retries[attempt_no] # 1st -> 0, 2nd -> 1...
 
       if retries.any? && attempt_no == retries.size
-        expiry = options.fetch :expiry, default_expiry
-        transition.expire_at = (first_attempt_at + expiry - 1.second)
+        expire_at   = options.fetch :expiry, nil
+        expire_at   = first_attempt_at + expire_at if expire_at
+        expire_at ||= first_attempt_at.end_of_day + 1.second + deadline
+        transition.expire_at = expire_at
       end
 
       transition.transition_at = (first_attempt_at + delay - 1.second) if delay
-    end
-
-    def default_expiry
-      Time.zone.now.tomorrow + deadline
     end
 
     def deadline

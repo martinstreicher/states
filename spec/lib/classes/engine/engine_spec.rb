@@ -25,17 +25,20 @@ RSpec.describe Engine do
     stub_const 'XProgram', x_program_class
   end
 
-  let(:now) { Time.zone.now }
+  let(:now) { Date.today.to_time }
   let(:x)   { create :script, name: 'X' }
 
   it 'Advances state' do
     Timecop.freeze(now) { x.transition_to :start }
 
-    Timecop.travel(now + 1.hour) { Engine.new.execute }
+    Timecop.travel(now + 1.hour) { described_class.new.execute }
     expect(x.current_state).to eq('goodbye_retry_one')
     expect(x.transitions.last.transition_at).to eq(now + 2.hours - 1.second)
 
-    Timecop.travel(now + 2.hours) { Engine.new.execute }
+    Timecop.travel(now + 2.hours) { described_class.new.execute }
     expect(x.current_state(force_reload: true)).to eq('goodbye_retry_two')
+
+    Timecop.travel(now.end_of_day + 5.hours + 1.second) { described_class.new.execute }
+    expect(x.current_state(force_reload: true)).to eq('expire')
   end
 end
