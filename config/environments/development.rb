@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'factory_bot'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -61,3 +63,11 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 end
+
+spec_dir = Rails.root.join('spec')
+
+dirs = [
+  File.join(spec_dir, 'factories/**/*.rb')
+]
+
+dirs.each { |dir| Dir[dir].each { |f| require f } }

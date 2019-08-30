@@ -6,7 +6,9 @@ module Tasks
       def initialize
         namespace :greenlight do
           task exp: :environment do
-            Participant.all
+            each_participant do |p|
+              puts p.name
+            end 
           end
         end
       end
