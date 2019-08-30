@@ -22,6 +22,10 @@ class Transition < ApplicationRecord
 
   validate :expiry_after_transition_at, if: proc { |r| r.transition_at }
 
+  def self.active
+    most_recent
+  end
+
   def self.due(at: Time.zone.now.utc)
     viable.most_recent.before(at)
   end

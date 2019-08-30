@@ -6,4 +6,12 @@ class Script < ApplicationRecord
   belongs_to :participant, optional: false
 
   validates :name, presence: true
+
+  def self.active
+    joins(:transitions).merge(Transition.active)
+  end
+
+  def active?
+    transitions.active.exists?
+  end
 end

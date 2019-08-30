@@ -18,4 +18,5 @@ loader = Zeitwerk::Loader.new
 # loader.log!
 loader.tag = 'Zeitwerk'
 loader.push_dir(Rails.root.join('lib', 'classes'))
+loader.push_dir(Rails.root.join('lib', 'tasks')) if Rails.env.development?
 loader.setup

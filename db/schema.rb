@@ -16,9 +16,11 @@ ActiveRecord::Schema.define(version: 2019_07_26_213750) do
   enable_extension "plpgsql"
 
   create_table "participants", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_participants_on_active"
   end
 
   create_table "scripts", force: :cascade do |t|

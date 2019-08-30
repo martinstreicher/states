@@ -5,7 +5,7 @@ module Implementations
     delegate :participant, to: :record
     delegate :group, to: :participant
     delegate :study, to: :group
-    
+
     def self.perform(options, record, transition)
       struct = RecursiveOpenStruct.new options
       new(struct, record, transition).perform

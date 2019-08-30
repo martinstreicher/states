@@ -2,8 +2,7 @@
 
 module Implementations
   class Say < Base
-    def perform
-    end
+    def perform; end
 
     private
 
