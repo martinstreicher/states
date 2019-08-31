@@ -8,7 +8,9 @@ class Script < ApplicationRecord
   validates :name, presence: true
 
   def self.active
-    joins(:transitions).merge(Transition.active)
+    joins(:participant, :transitions)
+      .merge(Transition.active)
+      .merge(Participant.active)
   end
 
   def active?

@@ -3,5 +3,6 @@
 FactoryBot.define do
   factory :participant do
     name { Faker::Name.name }
+    uuid { Faker::Code.sin }
   end
 end

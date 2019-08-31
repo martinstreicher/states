@@ -9,5 +9,11 @@ module Tasks
 
       scope.find_each { |participant| yield participant }
     end
+
+    def find_participant(identifier_or_model)
+      return identifier_or_model if identifier_or_model.respond_to?(:name)
+
+      Participant.by_id_or_uuid(identifier_or_model)
+    end
   end
 end

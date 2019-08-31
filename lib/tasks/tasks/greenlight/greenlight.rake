@@ -3,6 +3,16 @@
 namespace :greenlight do
   desc 'Run on a schedule'
 
+  task :weekly, [:participant] => :environment do |_task, args|
+    participant = args[:participant]
+    participant = Participant.find_by(id: participant) unless participant.respond_to?(:name)
+    puts participant.name
+  end
+
+  task test: :environment do
+    Rake::Task['greenlight:weekly'].invoke(Participant.first)
+  end
+
   task run: :environment do
     weekly_run_times =
       Montrose

@@ -10,17 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_26_213750) do
+ActiveRecord::Schema.define(version: 2019_08_31_005927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "participants", force: :cascade do |t|
     t.boolean "active", default: true, null: false
+    t.jsonb "history", default: {}, null: false
     t.string "name", null: false
+    t.string "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["active"], name: "index_participants_on_active"
+    t.index ["uuid"], name: "index_participants_on_uuid"
   end
 
   create_table "scripts", force: :cascade do |t|
@@ -29,6 +32,28 @@ ActiveRecord::Schema.define(version: 2019_07_26_213750) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["participant_id"], name: "index_scripts_on_participant_id"
+  end
+
+  create_table "sidekiq_jobs", force: :cascade do |t|
+    t.string "jid"
+    t.string "queue"
+    t.string "class_name"
+    t.text "args"
+    t.boolean "retry"
+    t.datetime "enqueued_at"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.string "status"
+    t.string "name"
+    t.text "result"
+    t.index ["class_name"], name: "index_sidekiq_jobs_on_class_name"
+    t.index ["enqueued_at"], name: "index_sidekiq_jobs_on_enqueued_at"
+    t.index ["finished_at"], name: "index_sidekiq_jobs_on_finished_at"
+    t.index ["jid"], name: "index_sidekiq_jobs_on_jid"
+    t.index ["queue"], name: "index_sidekiq_jobs_on_queue"
+    t.index ["retry"], name: "index_sidekiq_jobs_on_retry"
+    t.index ["started_at"], name: "index_sidekiq_jobs_on_started_at"
+    t.index ["status"], name: "index_sidekiq_jobs_on_status"
   end
 
   create_table "transitions", force: :cascade do |t|
