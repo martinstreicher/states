@@ -3,13 +3,13 @@
 module Schedules
   module Greenlight
     class Welcome < Base
-      def due?
-        time >= schedule
-      end
+      self.frequency = :yearly
 
-      memoize def schedule
+      memoize def next_occurrence
+        enrolled_at_datetime = Chronic.parse(enrolled_at.to_s)
+
         Montrose
-          .every(:year, on: { enrolled_at.month => enrolled_at.day })
+          .every(:year, on: { enrolled_at_datetime.month => enrolled_at_datetime.day })
           .starting(now)
           .first
           .beginning_of_day

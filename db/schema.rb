@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_31_005927) do
+ActiveRecord::Schema.define(version: 2019_09_03_012012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,19 @@ ActiveRecord::Schema.define(version: 2019_08_31_005927) do
     t.datetime "updated_at", null: false
     t.index ["active"], name: "index_participants_on_active"
     t.index ["uuid"], name: "index_participants_on_uuid"
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.datetime "history", default: [], array: true
+    t.string "name"
+    t.string "scheduleable_type"
+    t.bigint "scheduleable_id"
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_schedules_on_name"
+    t.index ["scheduleable_type", "scheduleable_id"], name: "index_schedules_on_scheduleable_type_and_scheduleable_id"
+    t.index ["type"], name: "index_schedules_on_type"
   end
 
   create_table "scripts", force: :cascade do |t|

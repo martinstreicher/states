@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Participant < ApplicationRecord
+class Yearly < Schedule
   require_concerns
 end

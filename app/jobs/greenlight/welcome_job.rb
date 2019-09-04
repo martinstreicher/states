@@ -6,6 +6,7 @@ module Greenlight
 
     def perform_on_participant(participant)
       return if participant.welcomed
+      return unless participant.enrolled_at
       return unless Schedules::Greenlight::Welcome.due?(participant)
 
       participant.welcomed = true
