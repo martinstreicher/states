@@ -5,7 +5,13 @@ module Schedules
     class Base < Schedules::Base
       SEMAPHORE = Mutex.new
 
-      delegate :enrolled_at, to: :scheduleable
+      memoize def analyzer
+        RecursiveOpenStruct.new first_sunday: (enrolled_at.sunday - 1.week)
+      end
+
+      memoize def enrolled_at
+        Chronic.parse(scheduleable.enrolled_at.to_s)
+      end
     end
   end
 end

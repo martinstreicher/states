@@ -16,9 +16,9 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
-  config.generators do |g|
-    g.test_framework :rspec
-    g.factory_bot dir: 'spec/factories'
+  config.generators do |generator|
+    generator.test_framework :rspec
+    generator.factory_bot dir: 'spec/factories'
   end
 
   # Show full error reports.
@@ -35,7 +35,6 @@ Rails.application.configure do
     }
   else
     config.action_controller.perform_caching = false
-
     config.cache_store = :null_store
   end
 

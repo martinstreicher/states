@@ -44,7 +44,7 @@ module Schedules
     end
 
     memoize def next_occurrence
-      now + Schedule::FAR_FUTURE
+      time + Schedule::FAR_FUTURE
     end
 
     memoize def schedule

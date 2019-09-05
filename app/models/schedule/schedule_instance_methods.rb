@@ -9,11 +9,15 @@ class Schedule < ApplicationRecord
     history.each { |datetime| yield datetime }
   end
 
-  def most_recent_occurrence
-    history.last || (now + FAR_FUTURE)
+  def far_future
+    now + FAR_FUTURE
   end
 
-  def now
+  def most_recent_occurrence
+    history.last || far_future
+  end
+
+  memoize def now
     Time.zone.now
   end
 
@@ -26,6 +30,18 @@ class Schedule < ApplicationRecord
       log << datetime
       save!
     end
+  end
+
+  def wipe!(number_of_events: nil, past: :distant)
+    if number_of_events.nil?
+      erased_events = history.clone
+      self.history = []
+      save!
+      return erased_events
+    end
+
+    operation = past == :distant ? :shift : :pop
+    history.send(operation, number_of_events).tap { |_erased_events| save! }
   end
 
   private
@@ -58,6 +74,10 @@ class Schedule < ApplicationRecord
 
   def week(datetime = most_recent_occurrence)
     datetime.strftime('%U')
+  end
+
+  def weeks
+    convert :week
   end
 
   def year(datetime = most_recent_occurrence)

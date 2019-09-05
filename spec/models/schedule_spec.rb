@@ -1,7 +1,4 @@
-require 'test_helper'
+# frozen_string_literal: true
 
-class ScheduleTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+RSpec.describe Schedule do
 end

@@ -6,11 +6,9 @@ module Schedules
       self.frequency = :yearly
 
       memoize def next_occurrence
-        enrolled_at_datetime = Chronic.parse(enrolled_at.to_s)
-
         Montrose
-          .every(:year, on: { enrolled_at_datetime.month => enrolled_at_datetime.day })
-          .starting(now)
+          .every(:year, on: { enrolled_at.month => enrolled_at.day })
+          .starting(time)
           .first
           .beginning_of_day
       end
