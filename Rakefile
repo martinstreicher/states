@@ -6,4 +6,4 @@
 require_relative 'config/application'
 
 Rails.application.load_tasks
-Tasks::Greenlight::Exp.new
+Tasks::Greenlight::Base.new

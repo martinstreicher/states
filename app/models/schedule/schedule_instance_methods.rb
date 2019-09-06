@@ -17,10 +17,6 @@ class Schedule < ApplicationRecord
     history.last || far_future
   end
 
-  memoize def now
-    Time.zone.now
-  end
-
   def occurred?
     false
   end
@@ -60,16 +56,36 @@ class Schedule < ApplicationRecord
     datetime.strftime('%D')
   end
 
+  def days
+    convert :day
+  end
+
   def hour(datetime = most_recent_occurrence)
     datetime.strftime('%D %H')
+  end
+
+  def hours
+    convert :hour
   end
 
   def minute(datetime = most_recent_occurrence)
     datetime.strftime('%D %T')
   end
 
+  def minutes
+    convert :minute
+  end
+
   def month(datetime = most_recent_occurrence)
     datetime.strftime('%m/%Y')
+  end
+
+  def months
+    convert :month
+  end
+
+  def now
+    Time.zone.now
   end
 
   def week(datetime = most_recent_occurrence)

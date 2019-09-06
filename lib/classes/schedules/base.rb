@@ -28,14 +28,14 @@ module Schedules
 
     def initialize(scheduleable, time: nil)
       @scheduleable = scheduleable
-      @time         = time || now
+      @time         = time
     end
 
     def due?
       return false if occurred?
-      return false if time < next_occurrence
+      return false if now < next_occurrence
 
-      record! time
+      record! now
       true
     end
 
@@ -55,6 +55,14 @@ module Schedules
 
     private
 
-    attr_reader :scheduleable, :time
+    def now
+      Time.zone.now
+    end
+
+    def time
+      @time || now
+    end
+
+    attr_reader :scheduleable
   end
 end
