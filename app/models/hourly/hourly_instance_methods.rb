@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
 class Hourly < Schedule
-  def occurred?
-    hours.include?(hour)
-  end
+  SPAN = 60.minutes.freeze
 end

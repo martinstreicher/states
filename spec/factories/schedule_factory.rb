@@ -2,8 +2,20 @@
 
 FactoryBot.define do
   trait :schedule do
-    association :participant
+    association :scheduleable, factory: :participant
     name        { Faker::Lorem.words(3).join }
+  end
+
+  factory :hourly, class: Hourly, traits: %i[schedule] do
+  end
+
+  factory :minutely, class: Hourly, traits: %i[schedule] do
+  end
+
+  factory :monthly, class: Hourly, traits: %i[schedule] do
+  end
+
+  factory :weekly, class: Yearly, traits: %i[schedule] do
   end
 
   factory :yearly, class: Yearly, traits: %i[schedule] do

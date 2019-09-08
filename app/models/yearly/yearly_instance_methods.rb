@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
 class Yearly < Schedule
-  def occurred?
-    years.include?(year)
-  end
+  SPAN = 1.year.freeze
 end

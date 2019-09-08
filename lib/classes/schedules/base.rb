@@ -19,10 +19,11 @@ module Schedules
     end
 
     def self.frequency=(type)
+      klass = type.to_s.classify.safe_constantize
+      raise(ArgumentError, "#{type} is not a valid schedule") unless klass
+
       SEMAPHORE.synchronize do
-        @frequency_type =
-          type.to_s.classify.safe_constantize ||
-          raise(ArgumentError, "#{type} is not a valid schedule")
+        @frequency_type = klass
       end
     end
 
