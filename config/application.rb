@@ -21,5 +21,5 @@ loader = Zeitwerk::Loader.new
 loader.tag = 'Zeitwerk'
 loader.push_dir(Rails.root.join('lib', 'classes'))
 loader.push_dir(Rails.root.join('lib', 'tasks'))
-# loader.log! # Enable as needed; can be noisy
+loader.log! # Enable as needed; can be noisy
 loader.setup

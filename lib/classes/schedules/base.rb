@@ -45,7 +45,7 @@ module Schedules
     end
 
     memoize def next_occurrence
-      time + Schedule::SPAN
+      times.next_occurrence(time)
     end
 
     memoize def schedule
@@ -68,6 +68,12 @@ module Schedules
 
     def time
       @time || now
+    end
+
+    def times
+      calendarize do |calendar|
+        calendar.add_recurrence_rule IceCube::Rule.yearly(time + Schedule::SPAN)
+      end
     end
 
     attr_reader :scheduleable
