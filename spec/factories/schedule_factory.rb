@@ -3,7 +3,7 @@
 FactoryBot.define do
   trait :schedule do
     association :scheduleable, factory: :participant
-    name        { Faker::Lorem.words(3).join }
+    name        { Faker::Lorem.words(number: 3).join }
   end
 
   factory :hourly, class: Hourly, traits: %i[schedule] do

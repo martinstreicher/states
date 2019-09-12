@@ -5,9 +5,9 @@ module Decorators
     class ParticipantDecorator < ApplicationDecorator
       delegate_all
 
-def enrolled_at
-  created_at
-end
+      def enrolled_at
+        created_at
+      end
 
       def welcomed
         history[:welcomed]

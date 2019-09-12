@@ -1,4 +1,5 @@
 require:
+  - rubocop-faker
   - rubocop-ordered_methods
   - rubocop-performance
   - rubocop-rails

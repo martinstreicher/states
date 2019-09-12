@@ -45,7 +45,7 @@ module Schedules
     end
 
     memoize def next_occurrence
-      time + Schedule::FAR_FUTURE
+      time + Schedule::SPAN
     end
 
     memoize def schedule
@@ -55,6 +55,12 @@ module Schedules
     end
 
     private
+
+    def calendarize(start_time: time, end_time: time + Schedule::SPAN, &_block)
+      IceCube::Schedule.new(start_time, end_time: end_time) do |calendar|
+        yield calendar
+      end
+    end
 
     def now
       Time.zone.now

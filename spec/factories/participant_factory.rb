@@ -2,7 +2,8 @@
 
 FactoryBot.define do
   factory :participant do
-    name { Faker::Name.name }
-    uuid { Faker::Code.sin }
+    enrolled_at { Time.zone.now - 2.weeks }
+    name        { Faker::Name.name }
+    uuid        { Faker::Code.sin }
   end
 end

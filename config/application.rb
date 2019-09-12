@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'boot'
+require 'active_support/time'
 require 'humanize'
 require 'rails/all'
 require 'sidekiq/api'
