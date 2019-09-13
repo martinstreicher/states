@@ -5,7 +5,8 @@ module Schedules
     class Welcome < Base
       self.frequency = :yearly
 
-      memoize def next_occurrence
+      memoize def times
+        calendarize 
         Montrose
           .every(:year, on: { enrolled_at.month => enrolled_at.day })
           .starting(time)

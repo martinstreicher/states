@@ -5,6 +5,7 @@ module Schedules
     include Memery
 
     SEMAPHORE = Mutex.new
+    SPAN      = 100.years.freeze
 
     delegate_missing_to :schedule
 
@@ -34,6 +35,7 @@ module Schedules
 
     def due?
       return false if occurred?
+      return false unless next_occurrence
       return false if now < next_occurrence
 
       record! now
@@ -45,6 +47,8 @@ module Schedules
     end
 
     memoize def next_occurrence
+      return unless (start..stop).cover?(time)
+
       times.next_occurrence(time)
     end
 
@@ -54,9 +58,23 @@ module Schedules
         .first_or_create!
     end
 
+    def start
+      time - SPAN
+    end
+
+    memoize def stop
+      time + SPAN
+    end
+
+    memoize def times
+      calendarize do |calendar|
+        calendar.add_recurrence_rule IceCube::Rule.yearly(time + SPAN)
+      end
+    end
+
     private
 
-    def calendarize(start_time: time, end_time: time + Schedule::SPAN, &_block)
+    def calendarize(start_time: start, end_time: stop, &_block)
       IceCube::Schedule.new(start_time, end_time: end_time) do |calendar|
         yield calendar
       end
@@ -66,14 +84,8 @@ module Schedules
       Time.zone.now
     end
 
-    def time
+    memoize def time
       @time || now
-    end
-
-    def times
-      calendarize do |calendar|
-        calendar.add_recurrence_rule IceCube::Rule.yearly(time + Schedule::SPAN)
-      end
     end
 
     attr_reader :scheduleable

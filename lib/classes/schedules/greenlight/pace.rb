@@ -5,13 +5,16 @@ module Schedules
     class Pace < Base
       self.frequency = :hourly
 
-      private
-      
-      def times
-        start_time = analyzer.first_sunday.beginning_of_day
-        end_time   = (start_time + 104.weeks).end_of_day
+      memoize def start
+        analyzer.first_sunday.beginning_of_day
+      end
 
-        calendarize(start_time: start_time, end_time: end_time) do |calendar|
+      memoize def stop
+        (start + 104.weeks).end_of_day
+      end
+
+      memoize def times
+        calendarize(start_time: start, end_time: stop) do |calendar|
           calendar.add_recurrence_rule IceCube::Rule.hourly(1) # .hour_of_day([*10..17])
         end
       end

@@ -9,14 +9,14 @@ module Schedules
         let(:participant) { create :participant }
         let(:now)         { Time.zone.now }
 
-        context 'when nothing has previously run' do
+        context 'when previously nothing has run' do
           it 'the task is due' do
             expect(pace).to be_due
           end
         end
 
         context 'when a run has occurred within the last hour' do
-          it 'the task is due' do
+          it 'the task is not due' do
             pace.history << now - 30.minutes
             expect(pace).not_to be_due
           end
@@ -26,6 +26,20 @@ module Schedules
           it 'the task is due' do
             pace.history << now - 60.minutes
             expect(pace).to be_due
+          end
+        end
+
+        context 'when before the planned period' do
+          it 'the task is not due' do
+            pace = described_class.new participant, time: now - 5.years
+            expect(pace).not_to be_due
+          end
+        end
+
+        context 'when after the planned period' do
+          it 'the task is not due' do
+            pace = described_class.new participant, time: now + 5.years
+            expect(pace).not_to be_due
           end
         end
       end
